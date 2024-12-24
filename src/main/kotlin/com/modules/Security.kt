@@ -31,6 +31,7 @@ import kotlin.time.Duration.Companion.seconds
 import kotlinx.serialization.Serializable
 import org.jetbrains.exposed.sql.*
 import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver
+import com.modules.constants.constsBeforeLogin as consts
 
 // Username value can be either username or index - currently only username is supported
 @Serializable
@@ -53,21 +54,20 @@ suspend fun checkUserType(
     // We make three queries to the db, which is not optimal
     // we should make a join query instead, but current impl of repos
     // does not support it
-    val admin = adminRepo.getByUsername(username)
-    if (admin != null)
-        return UserTypes.getType(admin.user_type)
+    val student = studentRepo.getByUsername(username)
+    if (student != null)
+        return UserTypes.getType(student.user_type)
 
     val teacher = teacherRepo.getByUsername(username)
     if (teacher != null)
         return UserTypes.getType(teacher.user_type)
 
-    val student = studentRepo.getByUsername(username)
-    if (student != null)
-        return UserTypes.getType(student.user_type)
+    val admin = adminRepo.getByUsername(username)
+    if (admin != null)
+        return UserTypes.getType(admin.user_type)
 
     return ConstsDB.N_A
 }
-
 
 fun Application.configureSecurity(pswdRepo: PasswordRepo,
                                   teacherRepo: TeacherRepo,
@@ -82,14 +82,12 @@ fun Application.configureSecurity(pswdRepo: PasswordRepo,
                 if (checkPassword(pswdRepo, credentials.name, credentials.password))
                     UserIdPrincipal(credentials.name)
                 else
-                {
-                    AuthenticationFailedCause.InvalidCredentials
                     null
-                }
             }
 
             challenge {
-                call.respond(HttpStatusCode.Unauthorized, "Invalid credentials")
+                call.respondRedirect("/loginForm?invalidCred=true")
+//                call.respond(ThymeleafContent("beforeLogin/loginForm", mapOf(consts.SESSION to consts.INVALID_CRED)))
             }
         }
     }
@@ -100,16 +98,14 @@ fun Application.configureSecurity(pswdRepo: PasswordRepo,
 
                 val existingSession = call.sessions.get<UserSession>()
                 if (existingSession != null)
-                {
-                    call.respondText("Already logged in as ${existingSession.username}.")
-                }
+                    call.respondRedirect("/home")
                 else
                 {
                     val userName = call.principal<UserIdPrincipal>()?.name.toString()
                     val userType = checkUserType(userName, teacherRepo, studentRepo, adminRepo)
                     call.sessions.set(UserSession(userName,
                         userType))
-                    call.respondText("Logged in as $userName.")
+                    call.respond(ThymeleafContent("afterLogin/loggedIN", mapOf("username" to userName)))
                 }
             }
         }
@@ -121,14 +117,17 @@ fun Application.configureSecurity(pswdRepo: PasswordRepo,
                 // session instead and UserPrincipalID will be null if we use it in call.principal
                 val userSession = call.principal<UserSession>()
 //                val userSession = call.sessions.get<UserSession>()
-                call.respondText("Hello from logged in only site ${userSession?.username}," +
-                        "your type is ${userSession?.userType}")
+//                call.respondText("Hello from logged in only site ${userSession?.username}," +
+//                        "your type is ${userSession?.userType}")
+                call.respond(ThymeleafContent("/afterLogin/testowe", mapOf("test" to Testowe(69, "testowe"))))
             }
 
             get ("/logout") {
                 call.sessions.clear<UserSession>()
-                call.respondText("Logged out.")
+                call.respondRedirect("/")
             }
         }
     }
 }
+
+data class Testowe(val id: Int, val name: String)

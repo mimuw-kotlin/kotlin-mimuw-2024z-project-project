@@ -32,16 +32,13 @@ fun Application.module() {
         session<UserSession>("auth-session") {
             validate { session: UserSession? ->
                 if (session != null)
-                {
-                    println("LOG: User ${session.username} validated SESSION. UserType: ${session.userType}")
                     return@validate session
-                }
                 else
                     return@validate null
             }
 
             challenge {
-                call.respondRedirect("/loginForm")
+                call.respondRedirect("/")
             }
         }
     }

@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Strona Główna</title>
+</head>
+<body th:with="LOGGED_IN='loggedIN', INVALID_CRED='invalidCred'">
+<h1> Strona główna dziennika </h1>
+
+<p> Witaj użytkowniku <span th:text="${username}"/> </p>
+
+<a href="/logout"> Wyloguj </a>
+
+</body>
+</html>

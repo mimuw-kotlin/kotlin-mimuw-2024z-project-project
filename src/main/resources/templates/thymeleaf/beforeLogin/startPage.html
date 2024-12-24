@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body th:with="LOGGED_IN='loggedIN', INVALID_CRED='invalidCred'">
+<h1> Dziennik </h1>
+
+<h2> Logowanie: </h2>
+<a href="/loginForm"> Zaloguj </a>
+<p th:if="${session == LOGGED_IN}" style="color: red;">
+    You are already logged in!
+</p>
+<p th:if="${session == INVALID_CRED}" style="color: red;">
+    Invalid credentials provided!
+</p>
+
+<h2> Rejestracja: </h2>
+<ol>
+    <li> <a href="/register/student"> Student </a> </li>
+    <li> <a href="/register/teacher"> Nauczyciel </a> </li>
+</ol>
+
+<h2> Inne: </h2>
+<ol>
+    <li> <a href="/static"> Plany na przyszłość </a> </li>
+</ol>
+
+</body>
+</html>

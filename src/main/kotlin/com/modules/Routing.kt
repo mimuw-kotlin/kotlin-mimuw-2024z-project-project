@@ -35,6 +35,7 @@ import kotlin.time.Duration.Companion.seconds
 import kotlinx.serialization.Serializable
 import org.jetbrains.exposed.sql.*
 import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver
+import com.modules.constants.constsBeforeLogin as consts
 
 
 fun generateRandomString(length: Int = 8): String {
@@ -44,6 +45,14 @@ fun generateRandomString(length: Int = 8): String {
         .joinToString("")
 }
 
+suspend fun checkIfLoggedIn(call: ApplicationCall): Unit {
+    val existingSession = call.sessions.get<UserSession>()
+
+    if (existingSession != null)
+        call.respondRedirect("/home")
+}
+
+
 fun Application.configureRouting(studentRepo: StudentRepo,
                                  teacherRepo: TeacherRepo,
                                  passwordRepo: PasswordRepo) {
@@ -52,102 +61,36 @@ fun Application.configureRouting(studentRepo: StudentRepo,
             call.respondText(text = "500: $cause", status = HttpStatusCode.InternalServerError)
         }
     }
+
     routing {
         staticResources("/static", "static")
 
         get("/") {
-            call.respondHtml {
-                body {
-                    h1 {
-                        "Dziennik"
-                    }
-                    a("/loginForm") {
-                        +"Login"
-                    }
-                    h2 {
-                        +"Rejestracja:"
-                    }
-                    a("/register/student") {
-                        +"Rejestracja ucznia"
-
-                    }
-                    br {  }
-                    a("/register/teacher") {
-                        +"Rejestracja nauczyciela"
-
-                    }
-                }
-            }
+            call.respond(ThymeleafContent("beforeLogin/startPage", mapOf(consts.SESSION to consts.EMPTY_STRING)))
         }
 
         get("/loginForm") {
-            val existingSession = call.sessions.get<UserSession>()
+            checkIfLoggedIn(call)
+            val queryParams = call.request.queryParameters
+            if (queryParams.isEmpty())
+                call.respond(ThymeleafContent("beforeLogin/loginForm", mapOf(consts.SESSION to consts.EMPTY_STRING)))
+            call.respond(ThymeleafContent("beforeLogin/loginForm", mapOf(consts.SESSION to consts.INVALID_CRED)))
 
-            if (existingSession != null)
-            {
-                call.respondText("Routing.kt - Already logged in as ${existingSession.username}.")
-            }
-
-            call.respondHtml {
-                body {
-                    form(
-                        action = "/login",
-                        encType = FormEncType.applicationXWwwFormUrlEncoded,
-                        method = FormMethod.post
-                    ) {
-                        p {
-                            +"Username:"
-                            textInput(name = "username")
-                        }
-                        p {
-                            +"Password:"
-                            passwordInput(name = "password")
-                        }
-                        p {
-                            submitInput() { value = "Login" }
-                        }
-                    }
-                }
-            }
         }
 
         route("/register") {
 
             get("/student") {
-                val existingSession = call.sessions.get<UserSession>()
-
-                if (existingSession != null)
-                {
-                    call.respondText("Already logged in as ${existingSession.username}.")
-                }
-
-                call.respondHtml {
-                    body {
-                        form(
-                            action = "/register/student",
-                            encType = FormEncType.applicationXWwwFormUrlEncoded,
-                            method = FormMethod.post
-                        ) {
-                            p {
-                                +"Username:"
-                                textInput(name = "username")
-                            }
-                            p {
-                                +"Password:"
-                                passwordInput(name = "password")
-                            }
-                            p {
-                                submitInput() { value = "Register" }
-                            }
-                        }
-                    }
-                }
+                checkIfLoggedIn(call)
+                call.respond(ThymeleafContent("beforeLogin/registerStudent", emptyMap()))
             }
 
             post("/student") {
+                checkIfLoggedIn(call)
+
                 val post = call.receiveParameters()
-                val username = post["username"]
-                val password = post["password"]
+                val username = post[consts.USERNAME]
+                val password = post[consts.PASSWORD]
 
                 if (username != null && password != null)
                 {
@@ -155,52 +98,30 @@ fun Application.configureRouting(studentRepo: StudentRepo,
                                         index = generateRandomString(),
                                         username=username,
                                         user_type = UserTypes.getType(ConstsDB.STUDENT),
-                                        class_nbr = "1E"
+                                        class_nbr = consts.N_A
                                     )
                     )
                     passwordRepo.setPassword(username, password)
-                    call.respondText ( "Registered student $username." )
+                    call.respond(ThymeleafContent("beforeLogin/registerStudent", mapOf(consts.SESSION to consts.SUCCESS)))
                 }
                 else
                 {
-                    call.respondText("Invalid username or password.")
+
+                    call.respond(ThymeleafContent("beforeLogin/registerStudent", mapOf(consts.SESSION to consts.INVALID_CRED)))
                 }
             }
 
             get("/teacher") {
-                val existingSession = call.sessions.get<UserSession>()
-
-                if (existingSession != null)
-                {
-                    call.respondText("Already logged in as ${existingSession.username}.")
-                }
-                call.respondHtml {
-                    body {
-                        form(
-                            action = "/register/teacher",
-                            encType = FormEncType.applicationXWwwFormUrlEncoded,
-                            method = FormMethod.post
-                        ) {
-                            p {
-                                +"Username:"
-                                textInput(name = "username")
-                            }
-                            p {
-                                +"Password:"
-                                passwordInput(name = "password")
-                            }
-                            p {
-                                submitInput() { value = "Register" }
-                            }
-                        }
-                    }
-                }
+                checkIfLoggedIn(call)
+                call.respond(ThymeleafContent("beforeLogin/registerTeacher", emptyMap()))
             }
 
             post("/teacher") {
+                checkIfLoggedIn(call)
+
                 val post = call.receiveParameters()
-                val username = post["username"]
-                val password = post["password"]
+                val username = post[consts.USERNAME]
+                val password = post[consts.PASSWORD]
 
                 if (username != null && password != null)
                 {
@@ -209,17 +130,30 @@ fun Application.configureRouting(studentRepo: StudentRepo,
                         index = generateRandomString(),
                         username=username,
                         user_type = UserTypes.getType(ConstsDB.TEACHER),
-                        class_nbr = "1E"
+                        class_nbr = consts.N_A
                     )
                     )
                     passwordRepo.setPassword(username, password)
-                    call.respondText ( "Registered teacher $username." )
+                    call.respond(ThymeleafContent("beforeLogin/registerTeacher", mapOf(consts.SESSION to consts.SUCCESS)))
                 }
                 else
                 {
-                    call.respondText("Invalid username or password.")
+                    call.respond(ThymeleafContent("beforeLogin/registerTeacher", mapOf(consts.SESSION to consts.INVALID_CRED)))
                 }
             }
         }
+
+
+
+        authenticate("auth-session") {
+
+            get("/home") {
+                val session = call.sessions.get<UserSession>()
+                val username = session!!.username
+                call.respond(ThymeleafContent("afterLogin/homepage", mapOf("username" to username)))
+            }
+
+        }
+
     }
 }
