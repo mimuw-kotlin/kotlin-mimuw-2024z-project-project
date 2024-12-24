@@ -12,4 +12,5 @@ class TeachersDAO(id: EntityID<Int>) : IntEntity(id){
     var username by TeachersTable.username
     var user_type by TeachersTable.user_type
     var class_nbr by TeachersTable.class_nbr
+    var active by TeachersTable.active
 }

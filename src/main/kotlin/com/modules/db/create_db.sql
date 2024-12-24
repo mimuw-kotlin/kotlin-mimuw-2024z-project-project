@@ -12,6 +12,7 @@ CREATE TABLE Students (
     username VARCHAR(70) NOT NULL,
     user_type VARCHAR(20) DEFAULT 'student',
     class_nbr VARCHAR(3),
+    active BOOLEAN DEFAULT FALSE,
     FOREIGN KEY (class_nbr) REFERENCES Classes(class_nbr)
 );
 
@@ -24,6 +25,7 @@ CREATE TABLE Teachers (
   user_type VARCHAR(20) DEFAULT 'teacher',
   is_class_teacher BOOLEAN DEFAULT FALSE,
   class_nbr VARCHAR(3),
+  active BOOLEAN DEFAULT FALSE,
   FOREIGN KEY (class_nbr) REFERENCES Classes(class_nbr)
 );
 

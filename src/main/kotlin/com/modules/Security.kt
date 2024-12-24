@@ -66,7 +66,25 @@ suspend fun checkUserType(
     if (admin != null)
         return UserTypes.getType(admin.user_type)
 
+//    TODO("Throw exception")
     return ConstsDB.N_A
+}
+
+suspend fun checkIfActive(userType: String, username: String, studentRepo: StudentRepo,
+                          teacherRepo: TeacherRepo) : Boolean {
+    if (userType == UserTypes.getType(ConstsDB.STUDENT))
+    {
+        val student = studentRepo.getByUsername(username)
+        if (student != null)
+            return student.active
+    }
+    else if (userType == UserTypes.getType(ConstsDB.TEACHER))
+    {
+        val teacher = teacherRepo.getByUsername(username)
+        if (teacher != null)
+            return teacher.active
+    }
+    return false
 }
 
 fun Application.configureSecurity(pswdRepo: PasswordRepo,
@@ -87,7 +105,6 @@ fun Application.configureSecurity(pswdRepo: PasswordRepo,
 
             challenge {
                 call.respondRedirect("/loginForm?invalidCred=true")
-//                call.respond(ThymeleafContent("beforeLogin/loginForm", mapOf(consts.SESSION to consts.INVALID_CRED)))
             }
         }
     }
@@ -103,8 +120,11 @@ fun Application.configureSecurity(pswdRepo: PasswordRepo,
                 {
                     val userName = call.principal<UserIdPrincipal>()?.name.toString()
                     val userType = checkUserType(userName, teacherRepo, studentRepo, adminRepo)
-                    call.sessions.set(UserSession(userName,
-                        userType))
+
+                    if (!checkIfActive(userType, userName, studentRepo, teacherRepo))
+                        call.respondRedirect("/loginForm?inactive=true")
+
+                    call.sessions.set(UserSession(userName, userType))
                     call.respond(ThymeleafContent("afterLogin/loggedIN", mapOf("username" to userName)))
                 }
             }

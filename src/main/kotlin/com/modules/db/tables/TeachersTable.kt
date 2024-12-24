@@ -11,4 +11,5 @@ object TeachersTable : IntIdTable(ConstsDB.TEACHERS){
     val user_type = varchar(ConstsDB.USER_TYPE, 20).default(UserTypes.getType(ConstsDB.TEACHER))
     val class_nbr = varchar(ConstsDB.CLASS_NBR, 3).references(ClassesTable.class_nbr,
         onDelete = ReferenceOption.CASCADE)
+    val active = bool(ConstsDB.ACTIVE).default(false)
 }

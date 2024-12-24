@@ -15,4 +15,5 @@ object StudentsTable : IntIdTable(ConstsDB.STUDENTS) {
     val user_type = varchar(ConstsDB.USER_TYPE, 20).default(ConstsDB.STUDENT)
     val class_nbr = varchar(ConstsDB.CLASS_NBR, 3).references(ClassesTable.class_nbr,
                                                                     onDelete = ReferenceOption.CASCADE)
+    val active = bool(ConstsDB.ACTIVE).default(false)
 }

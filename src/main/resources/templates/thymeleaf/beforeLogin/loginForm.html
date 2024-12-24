@@ -5,9 +5,17 @@
     <title>Title</title>
 </head>
 <body>
+<a href="/">Strona Główna</a>
+
+<p th:if="${inactive}" style="color: red;">
+    Account is inactive
+</p>
+
 <p th:if="${!session.isEmpty()}" style="color: red;">
     Invalid username or password
 </p>
+
+
 <form action="/login" enctype="application/x-www-form-urlencoded" method="post">
     <p>
         Username:
