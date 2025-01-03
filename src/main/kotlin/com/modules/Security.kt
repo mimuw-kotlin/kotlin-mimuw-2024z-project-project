@@ -64,7 +64,7 @@ fun Application.configureSecurity(pswdRepo: PasswordRepo,
                         when (userType) {
                             UserTypes.getStudentType() -> call.respond(ThymeleafContent("afterLogin/loggedIN", mapOf("username" to userName)))
                             UserTypes.getTeacherType() -> call.respond(ThymeleafContent("afterLogin/loggedIN", mapOf("username" to userName)))
-                            UserTypes.getAdminType() -> call.respondRedirect("/admin/home")
+                            UserTypes.getAdminType() -> call.respondRedirect("/admin/controlPanel")
                         }
                     }
                     catch (e: Exception) {

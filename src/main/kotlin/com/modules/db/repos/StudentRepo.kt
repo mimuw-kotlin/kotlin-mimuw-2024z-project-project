@@ -3,23 +3,27 @@ package com.modules.db.repos
 import com.modules.db.dataModels.StudentModel
 import com.modules.db.tables.StudentsTable
 import com.modules.db.DAO.StudentsDAO
+import com.modules.db.DAO.TeachersDAO
+import com.modules.db.dataModels.TeacherModel
 import com.modules.db.studentDAOToModel
 import com.modules.db.reposInterfaces.SchoolUsersInterface
 import com.modules.db.suspendTransaction
+import com.modules.db.tables.PasswordsTable
+import com.modules.db.tables.TeachersTable
 import org.jetbrains.exposed.sql.deleteWhere
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 
-class StudentRepo : SchoolUsersInterface<StudentModel>{
+class StudentRepo : SchoolUsersInterface<StudentModel> {
 
     override suspend fun getByClassNbr(clsNbr: String): List<StudentModel> = suspendTransaction {
         StudentsDAO
-            .find {(StudentsTable.classNbr eq clsNbr)}
+            .find { (StudentsTable.classNbr eq clsNbr) }
             .map(::studentDAOToModel)
     }
 
     override suspend fun getByUsername(username: String): StudentModel? = suspendTransaction {
         StudentsDAO
-            .find {(StudentsTable.username eq username)}
+            .find { (StudentsTable.username eq username) }
             .map(::studentDAOToModel)
             .firstOrNull()
     }
@@ -30,20 +34,29 @@ class StudentRepo : SchoolUsersInterface<StudentModel>{
 
     override suspend fun getByIndex(index: String) = suspendTransaction {
         StudentsDAO
-            .find {(StudentsTable.index eq index)}
+            .find { (StudentsTable.index eq index) }
             .map(::studentDAOToModel)
             .firstOrNull()
     }
 
     override suspend fun removeByIndex(index: String) = suspendTransaction {
+        val student = StudentsDAO.find { (StudentsTable.index eq index) }.firstOrNull()
+        if (student == null)
+            return@suspendTransaction false
+
+        val pswdDeleted = PasswordsTable.deleteWhere { username eq student.username }
         val rowsDeleted = StudentsTable.deleteWhere { StudentsTable.index eq index }
-        rowsDeleted == 1
+
+        rowsDeleted == 1 && pswdDeleted == 1
     }
 
     override suspend fun addRow(newRow: StudentModel): Unit = suspendTransaction {
 
-        // Here we should throw exception - TODO
-        if (StudentsDAO.find {(StudentsTable.index eq newRow.index)}.count() > 0)
+//      These checks ensure that the indexes are unique
+        if (StudentsDAO.find { (StudentsTable.index eq newRow.index) }.count() > 0)
+            return@suspendTransaction
+
+        if (TeachersDAO.find { (TeachersTable.index eq newRow.index) }.count() > 0)
             return@suspendTransaction
 
         StudentsDAO.new {
@@ -53,4 +66,20 @@ class StudentRepo : SchoolUsersInterface<StudentModel>{
             classNbr = newRow.classNbr
         }
     }
+
+
+    suspend fun updateRow(index: String, username: String, userType: String, classNbr: String, active: Boolean): Unit =
+        suspendTransaction {
+            val updatedRow = StudentModel(index, username, userType, classNbr, active)
+            val student = StudentsDAO.find { (StudentsTable.index eq updatedRow.index) }.firstOrNull()
+
+            if (student == null)
+                return@suspendTransaction
+
+            student.username = updatedRow.username
+            student.userType = updatedRow.userType
+            student.classNbr = updatedRow.classNbr
+            student.active = updatedRow.active
+        }
+
 }

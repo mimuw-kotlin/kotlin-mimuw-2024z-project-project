@@ -1,13 +1,29 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <meta charset="UTF-8">
     <title>Admin control panel</title>
+    <link rel="stylesheet" type="text/css" href="./cssAdmin/styleAdmin.css">
 </head>
-<body th:with="LOGGED_IN='loggedIN', INVALID_CRED='invalidCred'">
-<h1> Strona główna admina </h1>
 
+<body th:with="LOGGED_IN='loggedIN', INVALID_CRED='invalidCred'">
+<h1> Panel główny admina </h1>
 <a href="/logout"> Wyloguj </a>
+
+<br>
+
+<ul>
+    <li> <a href="/admin/deleteUsers"> Usuń użytkownika </a> </li>
+    <li> <a href="/admin/editUsers"> Edytuj użytkownika </a> </li>
+    <li> <a href="/admin/activateUsers"> Aktywuj użytkownika </a> </li>
+    <li> <a href="/admin/showUsers"> Wszyscy użytkownicy </a> </li>
+</ul>
+
+<p>---------------------------------------------------</p>
+<br>
+
+<a href="/home"> Strona domowa </a>
 
 </body>
 </html>

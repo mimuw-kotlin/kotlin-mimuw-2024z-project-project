@@ -1,5 +1,6 @@
 package com.modules.utils
 
+import com.modules.db.DAO.ClassesDAO
 import com.modules.db.other.ConstsDB
 import com.modules.db.other.PswdCheckRetVal
 import com.modules.db.other.UserTypes
@@ -7,6 +8,8 @@ import com.modules.db.repos.AdminRepo
 import com.modules.db.repos.PasswordRepo
 import com.modules.db.repos.StudentRepo
 import com.modules.db.repos.TeacherRepo
+import com.modules.db.tables.ClassesTable
+import io.ktor.http.Parameters
 
 suspend fun checkPassword(pswdRepo: PasswordRepo, username: String, password: String): Boolean {
     val pswdCheckRetVal = pswdRepo.checkPassword(username, password)
@@ -38,7 +41,25 @@ suspend fun checkUserType(
     if (admin != null)
         return UserTypes.getType(admin.userType)
 
-//    TODO("Throw exception")
+    throw Exception("User not found")
+}
+
+suspend fun checkUserType(
+    index: String,
+    teacherRepo: TeacherRepo,
+    studentRepo: StudentRepo
+): String {
+    // We make three queries to the db, which is not optimal
+    // we should make a join query instead, but current impl of repos
+    // does not support it
+    val student = studentRepo.getByIndex(index)
+    if (student != null)
+        return UserTypes.getType(student.userType)
+
+    val teacher = teacherRepo.getByIndex(index)
+    if (teacher != null)
+        return UserTypes.getType(teacher.userType)
+
     throw Exception("User not found")
 }
 
@@ -62,3 +83,40 @@ suspend fun checkIfActive(userType: String, username: String, studentRepo: Stude
     return false
 }
 
+suspend fun checkEditUserParams(
+    post: Parameters,
+    studentRepo: StudentRepo,
+    teacherRepo: TeacherRepo
+): Boolean {
+    val userIndex = post["index"]
+    val userName = post["username"]
+    val classNbr = post["classNbr"]
+    val active = post["active"]
+    val userType = post["userType"]
+
+    if (userIndex == null || userName == null || classNbr == null || active == null || userType == null)
+        return false
+
+
+    if (!checkUsername(userName))
+        return false
+
+    if (ClassesDAO.find { ClassesTable.classNbr eq classNbr}.empty())
+        return false
+
+    if (active.lowercase() != "true" && active.lowercase() != "false")
+        return false
+
+    if (!UserTypes.isAllowedType(userType))
+        return false
+
+    if (studentRepo.getByIndex(userIndex) == null && teacherRepo.getByIndex(userIndex) == null)
+        return false
+
+    return true
+}
+
+fun checkUsername(username: String): Boolean {
+    val nameRegex = Regex("^[a-zA-Z]+$")
+    return nameRegex.matches(username)
+}
