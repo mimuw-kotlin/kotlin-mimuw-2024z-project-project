@@ -68,7 +68,7 @@ fun Application.configureSecurity(pswdRepo: PasswordRepo,
                         }
                     }
                     catch (e: Exception) {
-
+                        println("\u001B[33m Exception: $e \u001B[0m")
                         call.respondRedirect("/loginForm?session=invalidCred")
                     }
                 }

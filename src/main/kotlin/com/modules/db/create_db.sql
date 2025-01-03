@@ -1,4 +1,4 @@
-DROP TABLE IF EXISTS Classes;
+DROP TABLE IF EXISTS Classes CASCADE;
 CREATE TABLE Classes (
   id SERIAL PRIMARY KEY,
   class_nbr VARCHAR(3) NOT NULL UNIQUE,
@@ -48,8 +48,9 @@ DROP TABLE IF EXISTS passwords;
 CREATE TABLE passwords (
    id SERIAL PRIMARY KEY,
    username VARCHAR(70) NOT NULL,
-   password VARCHAR(70) NOT NULL,
+   password VARCHAR(70) NOT NULL
 );
+insert into passwords (username, password) values ('superAdmin', '$2a$10$tuXxiyANtD.5mua3TuiBFOM7h1Z9aET8uIVY8bKPm7s1GMHovxRw.');
 
 DROP TABLE IF EXISTS admin;
 CREATE TABLE admin (
@@ -57,3 +58,4 @@ CREATE TABLE admin (
     username VARCHAR(70) NOT NULL,
     user_type VARCHAR(20) DEFAULT 'admin'
 );
+INSERT INTO admin (username) VALUES ('superAdmin');
