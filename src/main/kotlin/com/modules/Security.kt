@@ -1,6 +1,6 @@
 package com.modules
 
-import com.modules.db.other.ConstsDB
+import com.modules.constants.AppConsts
 import com.modules.db.other.PswdCheckRetVal
 import com.modules.db.other.UserTypes
 import com.modules.db.repos.AdminRepo
@@ -28,8 +28,8 @@ fun Application.configureSecurity(pswdRepo: PasswordRepo,
                                   adminRepo: AdminRepo) {
     authentication {
         form(name = "login-form-auth") {
-            userParamName = ConstsDB.USERNAME
-            passwordParamName = ConstsDB.PASSWORD
+            userParamName = AppConsts.USERNAME
+            passwordParamName = AppConsts.PASSWORD
 
             validate { credentials ->
                 if (checkPassword(pswdRepo, credentials.name, credentials.password))

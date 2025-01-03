@@ -14,14 +14,14 @@ fun Application.configureRoutingAdmin(studentRepo: StudentRepo,
                                  passwordRepo: PasswordRepo,
                                  adminRepo: AdminRepo
 ) {
+    routing {
+        authenticate("admin-session") {
+            route("/admin") {
+                get("/home") {
+                    call.respondText("Admin home page")
+                }
 
-    authenticate("admin-session") {
-        route("/admin") {
-
-            get("/home") {
-                call.respondText("Admin home page")
             }
-
         }
     }
 }
