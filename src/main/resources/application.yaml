@@ -11,3 +11,7 @@ postgres:
   jdbcURL: "jdbc:postgresql://localhost:5432/postgres"
   user: "postgres"
   password: "password"
+
+session:
+  secretEncryptKey: "00112233445566778899aabbccddeeff"
+  secretSignKey:  "6819b57a326945c1968f45236589"

@@ -109,7 +109,12 @@ fun Application.configureSecurity(pswdRepo: PasswordRepo,
                         call.respondRedirect("/loginForm?session=inactive")
 
                     call.sessions.set(UserSession(userName, userType))
-                    call.respond(ThymeleafContent("afterLogin/loggedIN", mapOf("username" to userName)))
+                    when (userType) {
+                        UserTypes.getStudentType() -> call.respond(ThymeleafContent("afterLogin/loggedIN", mapOf("username" to userName)))
+                        UserTypes.getTeacherType() -> call.respond(ThymeleafContent("afterLogin/loggedIN", mapOf("username" to userName)))
+                        UserTypes.getAdminType() -> call.respondRedirect()
+                    }
+
                 }
             }
         }
