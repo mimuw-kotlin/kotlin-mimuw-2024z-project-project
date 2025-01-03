@@ -7,6 +7,9 @@ import com.modules.db.repos.AdminRepo
 import com.modules.db.repos.PasswordRepo
 import com.modules.db.repos.StudentRepo
 import com.modules.db.repos.TeacherRepo
+import com.modules.utils.checkIfActive
+import com.modules.utils.checkPassword
+import com.modules.utils.checkUserType
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
 import io.ktor.server.response.*
@@ -19,66 +22,14 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class UserSession(val username: String, val userType: String)
 
-suspend fun checkPassword(pswdRepo: PasswordRepo, username: String, password: String): Boolean {
-    val pswdCheckRetVal = pswdRepo.checkPassword(username, password)
-    return when (pswdCheckRetVal) {
-        PswdCheckRetVal.USER_NOT_FOUND -> false
-        PswdCheckRetVal.PASSWORD_INCORRECT -> false
-        PswdCheckRetVal.PASSWORD_CORRECT -> true
-    }
-}
-
-suspend fun checkUserType(
-    username: String,
-    teacherRepo: TeacherRepo,
-    studentRepo: StudentRepo,
-    adminRepo: AdminRepo ): String {
-    // We make three queries to the db, which is not optimal
-    // we should make a join query instead, but current impl of repos
-    // does not support it
-    val student = studentRepo.getByUsername(username)
-    if (student != null)
-        return UserTypes.getType(student.userType)
-
-    val teacher = teacherRepo.getByUsername(username)
-    if (teacher != null)
-        return UserTypes.getType(teacher.userType)
-
-    val admin = adminRepo.getByUsername(username)
-    if (admin != null)
-        return UserTypes.getType(admin.userType)
-
-//    TODO("Throw exception")
-    throw Exception("User not found")
-}
-
-suspend fun checkIfActive(userType: String, username: String, studentRepo: StudentRepo,
-                          teacherRepo: TeacherRepo) : Boolean {
-    if (userType == UserTypes.getType(ConstsDB.STUDENT))
-    {
-        val student = studentRepo.getByUsername(username)
-        if (student != null)
-            return student.active
-    }
-    else if (userType == UserTypes.getType(ConstsDB.TEACHER))
-    {
-        val teacher = teacherRepo.getByUsername(username)
-        if (teacher != null)
-            return teacher.active
-    }
-    else if (userType == UserTypes.getAdminType())
-        return true
-    return false
-}
-
 fun Application.configureSecurity(pswdRepo: PasswordRepo,
                                   teacherRepo: TeacherRepo,
                                   studentRepo: StudentRepo,
                                   adminRepo: AdminRepo) {
     authentication {
         form(name = "login-form-auth") {
-            userParamName = "username"
-            passwordParamName = "password"
+            userParamName = ConstsDB.USERNAME
+            passwordParamName = ConstsDB.PASSWORD
 
             validate { credentials ->
                 if (checkPassword(pswdRepo, credentials.name, credentials.password))
@@ -103,24 +54,28 @@ fun Application.configureSecurity(pswdRepo: PasswordRepo,
                 else
                 {
                     val userName = call.principal<UserIdPrincipal>()?.name.toString()
-                    val userType = checkUserType(userName, teacherRepo, studentRepo, adminRepo)
+                    try {
+                        val userType = checkUserType(userName, teacherRepo, studentRepo, adminRepo)
 
-                    if (!checkIfActive(userType, userName, studentRepo, teacherRepo))
-                        call.respondRedirect("/loginForm?session=inactive")
+                        if (!checkIfActive(userType, userName, studentRepo, teacherRepo))
+                            call.respondRedirect("/loginForm?session=inactive")
 
-                    call.sessions.set(UserSession(userName, userType))
-                    when (userType) {
-                        UserTypes.getStudentType() -> call.respond(ThymeleafContent("afterLogin/loggedIN", mapOf("username" to userName)))
-                        UserTypes.getTeacherType() -> call.respond(ThymeleafContent("afterLogin/loggedIN", mapOf("username" to userName)))
-                        UserTypes.getAdminType() -> call.respondRedirect()
+                        call.sessions.set(UserSession(userName, userType))
+                        when (userType) {
+                            UserTypes.getStudentType() -> call.respond(ThymeleafContent("afterLogin/loggedIN", mapOf("username" to userName)))
+                            UserTypes.getTeacherType() -> call.respond(ThymeleafContent("afterLogin/loggedIN", mapOf("username" to userName)))
+                            UserTypes.getAdminType() -> call.respondRedirect("/admin/home")
+                        }
                     }
+                    catch (e: Exception) {
 
+                        call.respondRedirect("/loginForm?session=invalidCred")
+                    }
                 }
             }
         }
 
         authenticate("auth-session") {
-
             get ("/logout") {
                 call.sessions.clear<UserSession>()
                 call.respondRedirect("/")

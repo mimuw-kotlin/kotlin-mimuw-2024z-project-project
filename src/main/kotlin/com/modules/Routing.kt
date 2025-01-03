@@ -128,9 +128,6 @@ fun Application.configureRouting(studentRepo: StudentRepo,
             }
         }
 
-        route("/admin") {
-
-        }
 
         authenticate("auth-session") {
             get("/home") {

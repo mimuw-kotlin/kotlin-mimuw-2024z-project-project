@@ -1,5 +1,6 @@
 package com.modules
 
+import com.modules.db.other.UserTypes
 import com.modules.db.repos.AdminRepo
 import com.modules.db.repos.PasswordRepo
 import com.modules.db.repos.StudentRepo
@@ -46,6 +47,19 @@ fun Application.module() {
                 call.respondRedirect("/")
             }
         }
+
+        session<UserSession>("admin-session") {
+            validate { session: UserSession? ->
+                if (session != null && session.userType == UserTypes.getAdminType())
+                    return@validate session
+                else
+                    return@validate null
+            }
+
+            challenge {
+                call.respondRedirect("/")
+            }
+        }
     }
 
     configureSockets()
@@ -55,4 +69,5 @@ fun Application.module() {
     configureHTTP()
     configureSecurity(passwordRepo, teacherRepo, studentRepo, adminRepo)
     configureRouting(studentRepo, teacherRepo, passwordRepo, adminRepo)
+    configureRoutingAdmin(studentRepo, teacherRepo, passwordRepo, adminRepo)
 }
