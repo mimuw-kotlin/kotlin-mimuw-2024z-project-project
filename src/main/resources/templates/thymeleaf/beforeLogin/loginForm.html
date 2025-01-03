@@ -7,11 +7,11 @@
 <body>
 <a href="/">Strona Główna</a>
 
-<p th:if="${inactive}" style="color: red;">
+<p th:if="${session == 'inactive'}" style="color: red;">
     Account is inactive
 </p>
 
-<p th:if="${!session.isEmpty()}" style="color: red;">
+<p th:if="${session == 'invalidCred'}" style="color: red;">
     Invalid username or password
 </p>
 

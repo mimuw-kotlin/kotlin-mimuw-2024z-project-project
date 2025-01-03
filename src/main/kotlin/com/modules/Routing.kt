@@ -74,7 +74,7 @@ fun Application.configureRouting(studentRepo: StudentRepo,
             val queryParams = call.request.queryParameters
             if (queryParams.isEmpty())
                 call.respond(ThymeleafContent("beforeLogin/loginForm", mapOf(consts.SESSION to consts.EMPTY_STRING)))
-            call.respond(ThymeleafContent("beforeLogin/loginForm", mapOf(consts.SESSION to consts.INVALID_CRED)))
+            call.respond(ThymeleafContent("beforeLogin/loginForm", mapOf(consts.SESSION to queryParams[consts.SESSION]!!)))
 
         }
 

@@ -104,7 +104,7 @@ fun Application.configureSecurity(pswdRepo: PasswordRepo,
             }
 
             challenge {
-                call.respondRedirect("/loginForm?invalidCred=true")
+                call.respondRedirect("/loginForm?session=invalidCred")
             }
         }
     }
@@ -122,7 +122,7 @@ fun Application.configureSecurity(pswdRepo: PasswordRepo,
                     val userType = checkUserType(userName, teacherRepo, studentRepo, adminRepo)
 
                     if (!checkIfActive(userType, userName, studentRepo, teacherRepo))
-                        call.respondRedirect("/loginForm?inactive=true")
+                        call.respondRedirect("/loginForm?session=inactive")
 
                     call.sessions.set(UserSession(userName, userType))
                     call.respond(ThymeleafContent("afterLogin/loggedIN", mapOf("username" to userName)))

@@ -10,4 +10,5 @@ object constsBeforeLogin {
     const val USERNAME = "username"
     const val PASSWORD = "password"
     const val N_A = "N_A"
+    const val INACTIVE = "inactive"
 }

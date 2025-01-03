@@ -9,6 +9,6 @@ class ClassesDAO (id: EntityID<Int>) : IntEntity(id){
 
     companion object : IntEntityClass<ClassesDAO>(ClassesTable)
 
-    val class_nbr by ClassesTable.class_nbr
-    val class_teacher_name by ClassesTable.class_teacher_name
+    val class_nbr by ClassesTable.classNbr
+    val class_teacher_name by ClassesTable.classTeacherName
 }

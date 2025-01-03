@@ -13,7 +13,7 @@ class StudentRepo : SchoolUsersInterface<StudentModel>{
 
     override suspend fun getByClassNbr(clsNbr: String): List<StudentModel> = suspendTransaction {
         StudentsDAO
-            .find {(StudentsTable.class_nbr eq clsNbr)}
+            .find {(StudentsTable.classNbr eq clsNbr)}
             .map(::studentDAOToModel)
     }
 

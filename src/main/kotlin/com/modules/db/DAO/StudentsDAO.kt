@@ -4,7 +4,6 @@ import com.modules.db.tables.StudentsTable
 import org.jetbrains.exposed.dao.IntEntity
 import org.jetbrains.exposed.dao.IntEntityClass
 import org.jetbrains.exposed.dao.id.EntityID
-import org.jetbrains.exposed.dao.id.IntIdTable
 
 class StudentsDAO(id: EntityID<Int>) : IntEntity(id) {
 
@@ -16,7 +15,7 @@ class StudentsDAO(id: EntityID<Int>) : IntEntity(id) {
     // The delegation automatically provides the getter and setter methods
     var index by StudentsTable.index
     var username by StudentsTable.username
-    var user_type by StudentsTable.user_type
-    var class_nbr by StudentsTable.class_nbr
+    var user_type by StudentsTable.userType
+    var class_nbr by StudentsTable.classNbr
     var active by StudentsTable.active
 }
