@@ -10,5 +10,5 @@ class AdminDAO(id: EntityID<Int>) : IntEntity(id){
 
     var username by AdminTable.username
     var password by AdminTable.password
-    var user_type by AdminTable.userType
+    var userType by AdminTable.userType
 }

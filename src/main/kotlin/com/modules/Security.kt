@@ -7,31 +7,13 @@ import com.modules.db.repos.AdminRepo
 import com.modules.db.repos.PasswordRepo
 import com.modules.db.repos.StudentRepo
 import com.modules.db.repos.TeacherRepo
-import io.ktor.http.*
-import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
-import io.ktor.server.http.content.*
-import io.ktor.server.plugins.contentnegotiation.*
-import io.ktor.server.plugins.statuspages.*
-import io.ktor.server.plugins.swagger.*
-import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.ktor.server.sessions.*
-import io.ktor.server.thymeleaf.Thymeleaf
 import io.ktor.server.thymeleaf.ThymeleafContent
-import io.ktor.server.websocket.*
-import io.ktor.util.*
-import io.ktor.websocket.*
-import java.sql.Connection
-import java.sql.DriverManager
-import java.time.Duration
-import kotlin.time.Duration.Companion.seconds
 import kotlinx.serialization.Serializable
-import org.jetbrains.exposed.sql.*
-import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver
-import com.modules.constants.constsBeforeLogin as consts
 
 // Username value can be either username or index - currently only username is supported
 @Serializable
@@ -56,15 +38,15 @@ suspend fun checkUserType(
     // does not support it
     val student = studentRepo.getByUsername(username)
     if (student != null)
-        return UserTypes.getType(student.user_type)
+        return UserTypes.getType(student.userType)
 
     val teacher = teacherRepo.getByUsername(username)
     if (teacher != null)
-        return UserTypes.getType(teacher.user_type)
+        return UserTypes.getType(teacher.userType)
 
     val admin = adminRepo.getByUsername(username)
     if (admin != null)
-        return UserTypes.getType(admin.user_type)
+        return UserTypes.getType(admin.userType)
 
 //    TODO("Throw exception")
     return ConstsDB.N_A

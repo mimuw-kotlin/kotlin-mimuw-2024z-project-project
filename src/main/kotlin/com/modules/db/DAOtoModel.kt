@@ -6,31 +6,31 @@ import com.modules.db.dataModels.*
 fun adminDAOToModel(dao: AdminDAO) = AdminModel(
     username = dao.username,
     password = dao.password,
-    user_type = dao.user_type
+    userType = dao.userType
 )
 
 fun studentDAOToModel(dao: StudentsDAO) = StudentModel(
     index = dao.index,
     username = dao.username,
-    user_type = dao.user_type,
-    class_nbr = dao.class_nbr
+    userType = dao.userType,
+    classNbr = dao.classNbr
 )
 
 fun teacherDAOToModel(dao: TeachersDAO) = TeacherModel(
     index = dao.index,
     username = dao.username,
-    user_type = dao.user_type,
-    class_nbr = dao.class_nbr
+    userType = dao.userType,
+    classNbr = dao.classNbr
 )
 
 fun classDAOToModel(dao: ClassesDAO) = ClassModel(
-    class_nbr = dao.class_nbr,
-    class_teacher_name = dao.class_teacher_name
+    classNbr = dao.classNbr,
+    classTeacherName = dao.classTeacherName
 )
 
 fun subjectDAOToModel(dao: SubjectsDAO) = SubjectModel(
-    subject_code = dao.subject_index,
-    subject_name = dao.subject_name,
+    subjectCode = dao.subjectIndex,
+    subjectName = dao.subjectName,
     description = dao.description
 )
 

@@ -7,34 +7,16 @@ import com.modules.db.other.UserTypes
 import com.modules.db.repos.PasswordRepo
 import com.modules.db.repos.StudentRepo
 import com.modules.db.repos.TeacherRepo
-import com.modules.db.reposInterfaces.SchoolUsersInterface
 import io.ktor.http.*
-import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
 import io.ktor.server.http.content.*
-import io.ktor.server.plugins.contentnegotiation.*
 import io.ktor.server.plugins.statuspages.*
-import io.ktor.server.plugins.swagger.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.ktor.server.sessions.*
-import io.ktor.server.html.*
-import io.ktor.server.http.content.*
-import kotlinx.html.*
-import io.ktor.server.thymeleaf.Thymeleaf
 import io.ktor.server.thymeleaf.ThymeleafContent
-import io.ktor.server.websocket.*
-import io.ktor.util.*
-import io.ktor.websocket.*
-import java.sql.Connection
-import java.sql.DriverManager
-import java.time.Duration
-import kotlin.time.Duration.Companion.seconds
-import kotlinx.serialization.Serializable
-import org.jetbrains.exposed.sql.*
-import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver
 import com.modules.constants.constsBeforeLogin as consts
 
 
@@ -97,8 +79,8 @@ fun Application.configureRouting(studentRepo: StudentRepo,
                     studentRepo.addRow(StudentModel(
                                         index = generateRandomString(),
                                         username=username,
-                                        user_type = UserTypes.getType(ConstsDB.STUDENT),
-                                        class_nbr = consts.N_A
+                                        userType = UserTypes.getType(ConstsDB.STUDENT),
+                                        classNbr = consts.N_A
                                     )
                     )
                     passwordRepo.setPassword(username, password)
@@ -129,8 +111,8 @@ fun Application.configureRouting(studentRepo: StudentRepo,
                         TeacherModel(
                         index = generateRandomString(),
                         username=username,
-                        user_type = UserTypes.getType(ConstsDB.TEACHER),
-                        class_nbr = consts.N_A
+                        userType = UserTypes.getType(ConstsDB.TEACHER),
+                        classNbr = consts.N_A
                     )
                     )
                     passwordRepo.setPassword(username, password)

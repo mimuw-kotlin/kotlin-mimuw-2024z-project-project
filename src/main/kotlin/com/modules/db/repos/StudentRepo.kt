@@ -49,8 +49,8 @@ class StudentRepo : SchoolUsersInterface<StudentModel>{
         StudentsDAO.new {
             index = newRow.index
             username = newRow.username
-            user_type = newRow.user_type
-            class_nbr = newRow.class_nbr
+            userType = newRow.userType
+            classNbr = newRow.classNbr
         }
     }
 }

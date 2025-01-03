@@ -6,7 +6,7 @@ import kotlinx.serialization.Serializable
 data class StudentModel(
     val index: String,
     val username: String,
-    val user_type: String,
-    val class_nbr: String,
+    val userType: String,
+    val classNbr: String,
     val active: Boolean = false
 )

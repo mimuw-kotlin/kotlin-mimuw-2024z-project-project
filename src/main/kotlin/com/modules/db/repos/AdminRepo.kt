@@ -5,7 +5,6 @@ import com.modules.db.adminDAOToModel
 import com.modules.db.dataModels.AdminModel
 import com.modules.db.other.ConstsDB
 import com.modules.db.reposInterfaces.AdminInterface
-import com.modules.db.reposInterfaces.BasicInterface
 import com.modules.db.suspendTransaction
 import com.modules.db.tables.AdminTable
 import org.jetbrains.exposed.sql.deleteWhere
@@ -37,7 +36,7 @@ class AdminRepo : AdminInterface {
             AdminDAO.new {
                 username = newRow.username
                 password = newRow.password
-                user_type = newRow.user_type
+                userType = newRow.userType
             }
             return@suspendTransaction true
         }

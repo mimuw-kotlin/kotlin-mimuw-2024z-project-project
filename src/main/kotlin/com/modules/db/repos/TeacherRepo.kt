@@ -44,8 +44,8 @@ class TeacherRepo : SchoolUsersInterface<TeacherModel>{
         TeachersDAO.new {
             index = newRow.index
             username = newRow.username
-            user_type = newRow.user_type
-            class_nbr = newRow.class_nbr
+            userType = newRow.userType
+            classNbr = newRow.classNbr
         }
     }
 }

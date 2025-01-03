@@ -15,7 +15,7 @@ class StudentsDAO(id: EntityID<Int>) : IntEntity(id) {
     // The delegation automatically provides the getter and setter methods
     var index by StudentsTable.index
     var username by StudentsTable.username
-    var user_type by StudentsTable.userType
-    var class_nbr by StudentsTable.classNbr
+    var userType by StudentsTable.userType
+    var classNbr by StudentsTable.classNbr
     var active by StudentsTable.active
 }
