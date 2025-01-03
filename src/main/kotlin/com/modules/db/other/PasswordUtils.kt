@@ -8,10 +8,7 @@ object PasswordUtils {
     }
 
     fun verifyPassword(passwordFromUserInput: String,
-                       salt: String,
                        hashedPassword: String): Boolean {
-//        val inputHashed = BCrypt.hashpw(passwordFromUserInput, salt)
         return BCrypt.checkpw(passwordFromUserInput, hashedPassword)
-//        return inputHashed == hashedPassword
     }
 }

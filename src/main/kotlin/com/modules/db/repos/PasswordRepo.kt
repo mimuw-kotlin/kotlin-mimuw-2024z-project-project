@@ -21,7 +21,6 @@ class PasswordRepo : PasswordInterface {
 
         val retCheckVal = PasswordUtils.verifyPassword(
                                                 passwordFromUserInput = password,
-                                                salt = details.salt,
                                                 hashedPassword = details.password)
 
         if (retCheckVal)
@@ -35,7 +34,6 @@ class PasswordRepo : PasswordInterface {
         val user = PasswordsDAO.new {
             this.username = username
             this.password = hashedPasswordWithSalt.first
-            this.salt = hashedPasswordWithSalt.second
         }
     }
 }

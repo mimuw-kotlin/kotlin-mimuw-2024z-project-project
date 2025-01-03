@@ -2,8 +2,15 @@ DROP TABLE IF EXISTS Classes;
 CREATE TABLE Classes (
   id SERIAL PRIMARY KEY,
   class_nbr VARCHAR(3) NOT NULL UNIQUE,
-  class_teacher_name VARCHAR(70) DEFAULT 'N/A'
+  class_teacher_name VARCHAR(70) DEFAULT NULL
 );
+INSERT INTO Classes (class_nbr) VALUES ('1A');
+INSERT INTO Classes (class_nbr) VALUES ('1B');
+INSERT INTO Classes (class_nbr) VALUES ('1C');
+INSERT INTO Classes (class_nbr) VALUES ('2A');
+INSERT INTO Classes (class_nbr) VALUES ('2B');
+INSERT INTO Classes (class_nbr) VALUES ('2C');
+INSERT INTO Classes (class_nbr) VALUES ('N/A')
 
 DROP TABLE IF EXISTS Students;
 CREATE TABLE Students (
@@ -11,7 +18,7 @@ CREATE TABLE Students (
     index VARCHAR(8) NOT NULL UNIQUE ,
     username VARCHAR(70) NOT NULL,
     user_type VARCHAR(20) DEFAULT 'student',
-    class_nbr VARCHAR(3),
+    class_nbr VARCHAR(3) DEFAULT 'N/A',
     active BOOLEAN DEFAULT FALSE,
     FOREIGN KEY (class_nbr) REFERENCES Classes(class_nbr)
 );
@@ -24,7 +31,7 @@ CREATE TABLE Teachers (
   username VARCHAR(70) NOT NULL,
   user_type VARCHAR(20) DEFAULT 'teacher',
   is_class_teacher BOOLEAN DEFAULT FALSE,
-  class_nbr VARCHAR(3),
+  class_nbr VARCHAR(3) DEFAULT 'N/A',
   active BOOLEAN DEFAULT FALSE,
   FOREIGN KEY (class_nbr) REFERENCES Classes(class_nbr)
 );
@@ -42,12 +49,11 @@ CREATE TABLE passwords (
    id SERIAL PRIMARY KEY,
    username VARCHAR(70) NOT NULL,
    password VARCHAR(70) NOT NULL,
-   salt VARCHAR(70) NOT NULL
 );
 
+DROP TABLE IF EXISTS admin;
 CREATE TABLE admin (
     id SERIAL PRIMARY KEY,
     username VARCHAR(70) NOT NULL,
-    password VARCHAR(70) NOT NULL
     user_type VARCHAR(20) DEFAULT 'admin'
 );

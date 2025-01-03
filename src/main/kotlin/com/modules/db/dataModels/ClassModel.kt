@@ -5,5 +5,5 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class ClassModel(
     val classNbr: String,
-    val classTeacherName: String,
+    val classTeacherName: String?,
 )

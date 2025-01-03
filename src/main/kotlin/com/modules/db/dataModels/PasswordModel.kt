@@ -5,6 +5,5 @@ import kotlinx.serialization.Serializable
 @Serializable
 class PasswordModel (
     var username: String,
-    var password: String,
-    var salt: String
+    var password: String
 )

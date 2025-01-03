@@ -21,8 +21,26 @@ object UserTypes {
         if (type.lowercase() in allowedTypes) {
             return type.lowercase()
         }
-        return ConstsDB.N_A
+        throw Exception("User type not allowed")
     }
+
+    fun getStudentType(): String {
+        return ConstsDB.STUDENT
+    }
+
+    fun getTeacherType(): String {
+        return ConstsDB.TEACHER
+    }
+
+    fun getHeadmasterType(): String {
+        return ConstsDB.HEADMASTER
+    }
+
+    fun getAdminType(): String {
+        return ConstsDB.ADMIN
+    }
+
+
 
     fun isAllowedType(type: String): Boolean {
         return allowedTypes.contains(type)

@@ -1,9 +1,11 @@
 package com.modules
 
+import com.modules.db.dataModels.AdminModel
 import com.modules.db.dataModels.StudentModel
 import com.modules.db.dataModels.TeacherModel
 import com.modules.db.other.ConstsDB
 import com.modules.db.other.UserTypes
+import com.modules.db.repos.AdminRepo
 import com.modules.db.repos.PasswordRepo
 import com.modules.db.repos.StudentRepo
 import com.modules.db.repos.TeacherRepo
@@ -37,7 +39,8 @@ suspend fun checkIfLoggedIn(call: ApplicationCall): Unit {
 
 fun Application.configureRouting(studentRepo: StudentRepo,
                                  teacherRepo: TeacherRepo,
-                                 passwordRepo: PasswordRepo) {
+                                 passwordRepo: PasswordRepo,
+                                 adminRepo: AdminRepo) {
     install(StatusPages) {
         exception<Throwable> { call, cause ->
             call.respondText(text = "500: $cause", status = HttpStatusCode.InternalServerError)
@@ -110,7 +113,7 @@ fun Application.configureRouting(studentRepo: StudentRepo,
                     teacherRepo.addRow(
                         TeacherModel(
                         index = generateRandomString(),
-                        username=username,
+                        username = username,
                         userType = UserTypes.getType(ConstsDB.TEACHER),
                         classNbr = consts.N_A
                     )
@@ -125,8 +128,6 @@ fun Application.configureRouting(studentRepo: StudentRepo,
             }
         }
 
-
-
         authenticate("auth-session") {
 
             get("/home") {
@@ -134,8 +135,6 @@ fun Application.configureRouting(studentRepo: StudentRepo,
                 val username = session!!.username
                 call.respond(ThymeleafContent("afterLogin/homepage", mapOf("username" to username)))
             }
-
         }
-
     }
 }

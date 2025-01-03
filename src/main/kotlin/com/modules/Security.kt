@@ -49,7 +49,7 @@ suspend fun checkUserType(
         return UserTypes.getType(admin.userType)
 
 //    TODO("Throw exception")
-    return ConstsDB.N_A
+    throw Exception("User not found")
 }
 
 suspend fun checkIfActive(userType: String, username: String, studentRepo: StudentRepo,
@@ -66,6 +66,8 @@ suspend fun checkIfActive(userType: String, username: String, studentRepo: Stude
         if (teacher != null)
             return teacher.active
     }
+    else if (userType == UserTypes.getAdminType())
+        return true
     return false
 }
 
@@ -113,16 +115,6 @@ fun Application.configureSecurity(pswdRepo: PasswordRepo,
         }
 
         authenticate("auth-session") {
-            get("/protected/session") {
-
-                // we use UserPrincipalId only when user is logging in, now we have
-                // session instead and UserPrincipalID will be null if we use it in call.principal
-                val userSession = call.principal<UserSession>()
-//                val userSession = call.sessions.get<UserSession>()
-//                call.respondText("Hello from logged in only site ${userSession?.username}," +
-//                        "your type is ${userSession?.userType}")
-                call.respond(ThymeleafContent("/afterLogin/testowe", mapOf("test" to Testowe(69, "testowe"))))
-            }
 
             get ("/logout") {
                 call.sessions.clear<UserSession>()
@@ -131,5 +123,3 @@ fun Application.configureSecurity(pswdRepo: PasswordRepo,
         }
     }
 }
-
-data class Testowe(val id: Int, val name: String)

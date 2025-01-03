@@ -5,7 +5,6 @@ import com.modules.db.dataModels.*
 
 fun adminDAOToModel(dao: AdminDAO) = AdminModel(
     username = dao.username,
-    password = dao.password,
     userType = dao.userType
 )
 
@@ -36,6 +35,5 @@ fun subjectDAOToModel(dao: SubjectsDAO) = SubjectModel(
 
 fun passwordDAOToModel(dao: PasswordsDAO) = PasswordModel(
     username = dao.username,
-    password = dao.password,
-    salt = dao.salt
+    password = dao.password
 )

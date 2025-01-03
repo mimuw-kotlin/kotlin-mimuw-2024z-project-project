@@ -10,5 +10,4 @@ class PasswordsDAO (id: EntityID<Int>) : IntEntity(id){
 
     var username by PasswordsTable.username
     var password by PasswordsTable.password
-    var salt by PasswordsTable.salt
 }

@@ -6,5 +6,4 @@ import com.modules.db.other.ConstsDB
 object PasswordsTable : IntIdTable(ConstsDB.PASSWORDS){
     val username = varchar(ConstsDB.USERNAME, 70)
     val password = varchar(ConstsDB.PASSWORD, 70)
-    val salt = varchar(ConstsDB.SALT, 70)
 }

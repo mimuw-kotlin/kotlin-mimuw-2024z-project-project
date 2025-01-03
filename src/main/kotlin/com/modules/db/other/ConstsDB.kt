@@ -7,7 +7,7 @@ object ConstsDB{
     const val TEACHERS = "teachers"
     const val HEADMASTER = "headmaster"
     const val ADMIN = "admin"
-    const val N_A = "N/A"
+    val N_A = null
     const val INDEX = "index"
     const val USERNAME = "username"
     const val USER_TYPE = "user_type"

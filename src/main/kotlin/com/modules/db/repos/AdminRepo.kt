@@ -7,6 +7,7 @@ import com.modules.db.other.ConstsDB
 import com.modules.db.reposInterfaces.AdminInterface
 import com.modules.db.suspendTransaction
 import com.modules.db.tables.AdminTable
+import com.modules.db.tables.PasswordsTable
 import org.jetbrains.exposed.sql.deleteWhere
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 
@@ -22,8 +23,10 @@ class AdminRepo : AdminInterface {
     override suspend fun removeByUsername(username: String) = suspendTransaction {
         if (username != ConstsDB.SUPER_ADMIN)
         {
-            val rowsDeleted = AdminTable.deleteWhere { AdminTable.username eq username }
-            rowsDeleted == 1
+            val adminDeleted = AdminTable.deleteWhere { AdminTable.username eq username }
+            val pswdDeleted = PasswordsTable.deleteWhere { PasswordsTable.username eq username }
+
+            adminDeleted == 1 && pswdDeleted == 1
         }
         else
             false
@@ -35,7 +38,6 @@ class AdminRepo : AdminInterface {
         {
             AdminDAO.new {
                 username = newRow.username
-                password = newRow.password
                 userType = newRow.userType
             }
             return@suspendTransaction true

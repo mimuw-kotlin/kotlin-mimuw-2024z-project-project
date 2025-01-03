@@ -9,6 +9,5 @@ class AdminDAO(id: EntityID<Int>) : IntEntity(id){
     companion object CompObj : IntEntityClass<AdminDAO>(AdminTable)
 
     var username by AdminTable.username
-    var password by AdminTable.password
     var userType by AdminTable.userType
 }
