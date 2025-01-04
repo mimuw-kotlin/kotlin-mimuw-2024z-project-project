@@ -52,20 +52,14 @@ fun Application.configureRoutingAdmin(studentRepo: StudentRepo,
                     val green = "\u001B[32m"
                     val reset = "\u001B[0m"
 
-                    for (teacher in teachers) {
-                        println(green + "userIndex: ${teacher.index}" + reset)
-                        println(green + "username: ${teacher.username}" + reset)
-                        println(green + "classNbr: ${teacher.classNbr}" + reset)
-                        println(green + "active: ${teacher.active}" + reset)
-                        println(green + "userType: ${teacher.userType}" + reset)
-                    }
-
                     val queryParams = call.request.queryParameters
                     if (queryParams.isEmpty())
+                    {
                         call.respond(ThymeleafContent("admin/editUsers",
                             mapOf("students" to students, "teachers" to teachers)))
+                        return@get
+                    }
 
-                    println("#######------STATUS: ${queryParams["status"]}")
                     call.respond(ThymeleafContent("admin/editUsers",
                         mapOf("students" to students, "teachers" to teachers, "status" to queryParams["status"]!!)))
                 }
@@ -81,8 +75,10 @@ fun Application.configureRoutingAdmin(studentRepo: StudentRepo,
                             if (user != null) {
                                 call.respond(ThymeleafContent("admin/editChosenUser",
                                     mapOf("user" to user)))
+                                return@get
                             }
                             call.respondRedirect("/admin/editUsers?status=studentEditChosen")
+                            return@get
                         }
                         else
                         {
@@ -90,8 +86,10 @@ fun Application.configureRoutingAdmin(studentRepo: StudentRepo,
                             if (user != null) {
                                 call.respond(ThymeleafContent("admin/editChosenUser",
                                     mapOf("user" to user)))
+                                return@get
                             }
                             call.respondRedirect("/admin/editUsers?status=TeacherEditChosen")
+                            return@get
                         }
                     }
                     call.respondRedirect("/admin/editUsers?status=userIndexNull")
@@ -117,25 +115,17 @@ fun Application.configureRoutingAdmin(studentRepo: StudentRepo,
 
                     if (userIndex != null && username != null && classNbr != null && active != null && userType != null) {
 
-                        println(yellow + "check params" + reset)
-                        if (!checkEditUserParams(post, studentRepo, teacherRepo, classRepo))
-                        {
-                            println(yellow + "!!!!!!CHECK EDIT USER PARAMS FAILED!!!!!" + reset)
+                        if (!checkEditUserParams(post, studentRepo, teacherRepo, classRepo)) {
                             call.respondRedirect("/admin/editUsers?status=editUserParamsError")
                             return@post
                         }
 
-                        println(yellow + "check usertype" + reset)
                         val realUserType = checkUserType(userIndex, teacherRepo, studentRepo)
-
-
-                        if (realUserType == UserTypes.getStudentType() && userType != realUserType)
-                        {
+                        if (realUserType == UserTypes.getStudentType() && userType != realUserType) {
                             call.respondRedirect("/admin/editUsers?status=studentTypeMismatch")
                             return@post
                         }
 
-                        println(yellow + "old username" + reset)
                         val oldUsername = when (realUserType) {
                             UserTypes.getStudentType() -> studentRepo.getByIndex(userIndex)?.username
                             UserTypes.getTeacherType() -> teacherRepo.getByIndex(userIndex)?.username
@@ -144,38 +134,58 @@ fun Application.configureRoutingAdmin(studentRepo: StudentRepo,
                         }
 
 //                      this means that somebody is trying to change index of a user
-                        if (oldUsername == null)
-                        {
+                        if (oldUsername == null) {
                             call.respondRedirect("/admin/editUsers?status=oldUsernameNull")
                             return@post
                         }
 
-                        println(yellow + "old username != username" + reset)
                         if (oldUsername != username)
-                            passwordRepo.updateUsername(oldUsername!!, username)
+                            passwordRepo.updateUsername(oldUsername, username)
 
-                        val boolActive: Boolean = active == "true"
+                        val boolActive: Boolean = active.lowercase() == "true"
 
-                        println(yellow + "when" + reset)
                         when (realUserType) {
-                            UserTypes.getStudentType() -> studentRepo.updateRow(userIndex, username, userType, classNbr, boolActive)
-                            UserTypes.getTeacherType() -> teacherRepo.updateRow(userIndex, username, userType, classNbr, boolActive)
-                            UserTypes.getHeadmasterType() -> teacherRepo.updateRow(userIndex, username, userType, classNbr, boolActive)
+                            UserTypes.getStudentType() -> {
+                                studentRepo.updateRow(userIndex, username, userType, classNbr, boolActive)
+                                val student = studentRepo.getByIndex(userIndex)
+                                if (student != null) {
+                                    println(yellow + "student active: ${student.active}" + reset)
+                                }
+
                             }
-                        println(yellow + "AFTER WHEN" + reset)
+
+                            UserTypes.getTeacherType() -> {
+                                teacherRepo.updateRow(userIndex, username, userType, classNbr, boolActive)
+
+                                val teacher = teacherRepo.getByIndex(userIndex)
+                                if (teacher != null) {
+                                    println(yellow + "TEACHER active: ${teacher.active}" + reset)
+                                }
+                            }
+
+                            UserTypes.getHeadmasterType() -> {
+                                teacherRepo.updateRow(userIndex, username, userType, classNbr, boolActive)
+
+                                val teacher = teacherRepo.getByIndex(userIndex)
+                                if (teacher != null) {
+                                    println(yellow + "TEACHER active: ${teacher.active}" + reset)
+                                }
+                            }
+                        }
                         call.respondRedirect("/admin/editUsers?status=0")
                         return@post
                     }
-                    call.respondRedirect("/admin/editUsers?status=someParamisNull")
+                    call.respondRedirect("/admin/editUsers?status=someParamIsNull")
                 }
 
                 get("/activateUsers") {
                     call.respondText("Activate user")
                 }
+                }
+
 
                 }
             }
         }
-    }
 
 

@@ -18,6 +18,7 @@ import com.modules.db.tables.PasswordsTable
 import com.modules.db.tables.TeachersTable
 import org.jetbrains.exposed.sql.deleteWhere
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
+import org.jetbrains.exposed.sql.transactions.TransactionManager
 import org.jetbrains.exposed.sql.update
 
 class ClassRepo  {
@@ -64,5 +65,8 @@ class ClassRepo  {
             it[ClassesTable.classNbr] = updatedRow.classNbr
             it[ClassesTable.classTeacherName] = updatedRow.classTeacherName
         }
+
+//      This is needed so that we don't get old data from the database
+        TransactionManager.current().commit()
     }
 }

@@ -10,7 +10,7 @@ INSERT INTO Classes (class_nbr) VALUES ('1C');
 INSERT INTO Classes (class_nbr) VALUES ('2A');
 INSERT INTO Classes (class_nbr) VALUES ('2B');
 INSERT INTO Classes (class_nbr) VALUES ('2C');
-INSERT INTO Classes (class_nbr) VALUES ('N/A')
+INSERT INTO Classes (class_nbr) VALUES ('N/A');
 
 DROP TABLE IF EXISTS Students;
 CREATE TABLE Students (

@@ -11,6 +11,7 @@ import com.modules.db.tables.TeachersTable
 import com.modules.db.teacherDAOToModel
 import org.jetbrains.exposed.sql.deleteWhere
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
+import org.jetbrains.exposed.sql.transactions.TransactionManager
 import org.jetbrains.exposed.sql.update
 
 class TeacherRepo : SchoolUsersInterface<TeacherModel>{
@@ -79,5 +80,8 @@ class TeacherRepo : SchoolUsersInterface<TeacherModel>{
             it[TeachersTable.classNbr] = updatedRow.classNbr
             it[TeachersTable.active] = updatedRow.active
         }
+
+//      This is needed so that we don't get old data from the database
+        TransactionManager.current().commit()
     }
 }

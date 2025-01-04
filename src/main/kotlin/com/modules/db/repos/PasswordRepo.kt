@@ -7,6 +7,7 @@ import com.modules.db.passwordDAOToModel
 import com.modules.db.reposInterfaces.PasswordInterface
 import com.modules.db.suspendTransaction
 import com.modules.db.tables.PasswordsTable
+import org.jetbrains.exposed.sql.transactions.TransactionManager
 import org.jetbrains.exposed.sql.update
 
 class PasswordRepo : PasswordInterface {
@@ -47,5 +48,8 @@ class PasswordRepo : PasswordInterface {
         PasswordsTable.update ({ PasswordsTable.username eq oldUsername }) {
             it[PasswordsTable.username] = newUsername
         }
+
+//      This is needed so that we don't get old data from the database
+        TransactionManager.current().commit()
     }
 }

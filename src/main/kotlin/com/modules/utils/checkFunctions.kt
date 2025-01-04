@@ -123,11 +123,10 @@ suspend fun checkEditUserParams(
 
     if (active.lowercase() != "true" && active.lowercase() != "false")
     {
-        println(red + "active.lowercase() got false" + reset)
+        println(red + "active.lowercase() got neither false nor true" + reset)
         return false
     }
 
-    println(yellow + "user type" + reset)
     if (!UserTypes.isAllowedType(userType))
     {
         println(red + "UserTypes.isAllowedType got false" + reset)
