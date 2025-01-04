@@ -35,7 +35,6 @@ suspend fun checkIfLoggedIn(call: ApplicationCall): Unit {
         call.respondRedirect("/home")
 }
 
-
 fun Application.configureRouting(studentRepo: StudentRepo,
                                  teacherRepo: TeacherRepo,
                                  passwordRepo: PasswordRepo,

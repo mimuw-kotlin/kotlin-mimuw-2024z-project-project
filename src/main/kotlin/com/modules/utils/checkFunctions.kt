@@ -4,10 +4,8 @@ import com.modules.db.DAO.ClassesDAO
 import com.modules.db.other.ConstsDB
 import com.modules.db.other.PswdCheckRetVal
 import com.modules.db.other.UserTypes
-import com.modules.db.repos.AdminRepo
-import com.modules.db.repos.PasswordRepo
-import com.modules.db.repos.StudentRepo
-import com.modules.db.repos.TeacherRepo
+import com.modules.db.repos.*
+import com.modules.db.suspendTransaction
 import com.modules.db.tables.ClassesTable
 import io.ktor.http.Parameters
 
@@ -86,7 +84,8 @@ suspend fun checkIfActive(userType: String, username: String, studentRepo: Stude
 suspend fun checkEditUserParams(
     post: Parameters,
     studentRepo: StudentRepo,
-    teacherRepo: TeacherRepo
+    teacherRepo: TeacherRepo,
+    classRepo: ClassRepo
 ): Boolean {
     val userIndex = post["index"]
     val userName = post["username"]
@@ -97,19 +96,25 @@ suspend fun checkEditUserParams(
     if (userIndex == null || userName == null || classNbr == null || active == null || userType == null)
         return false
 
-
     if (!checkUsername(userName))
         return false
 
-    if (ClassesDAO.find { ClassesTable.classNbr eq classNbr}.empty())
+    val yellow = "\u001B[33m"
+    val reset = "\u001B[0m"
+    println(yellow + "Before checkClassNbr" + reset)
+
+    if (classRepo.getByClassNbr(classNbr) == null)
         return false
 
+    println(yellow + "active= ${active}" + reset)
     if (active.lowercase() != "true" && active.lowercase() != "false")
         return false
 
+    println(yellow + "user type" + reset)
     if (!UserTypes.isAllowedType(userType))
         return false
 
+    println("checking indes in repos")
     if (studentRepo.getByIndex(userIndex) == null && teacherRepo.getByIndex(userIndex) == null)
         return false
 

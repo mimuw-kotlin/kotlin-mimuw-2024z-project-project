@@ -7,6 +7,7 @@ import com.modules.db.passwordDAOToModel
 import com.modules.db.reposInterfaces.PasswordInterface
 import com.modules.db.suspendTransaction
 import com.modules.db.tables.PasswordsTable
+import org.jetbrains.exposed.sql.update
 
 class PasswordRepo : PasswordInterface {
     override suspend fun checkPassword(username: String, password: String): PswdCheckRetVal = suspendTransaction{
@@ -34,6 +35,17 @@ class PasswordRepo : PasswordInterface {
         val user = PasswordsDAO.new {
             this.username = username
             this.password = hashedPasswordWithSalt.first
+        }
+    }
+
+    suspend fun updateUsername(oldUsername: String, newUsername: String) = suspendTransaction{
+        val user = PasswordsDAO.find { PasswordsTable.username eq oldUsername }.firstOrNull()
+
+        if (user == null)
+            return@suspendTransaction
+
+        PasswordsTable.update ({ PasswordsTable.username eq oldUsername }) {
+            it[PasswordsTable.username] = newUsername
         }
     }
 }

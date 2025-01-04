@@ -12,6 +12,7 @@ import com.modules.db.tables.PasswordsTable
 import com.modules.db.tables.TeachersTable
 import org.jetbrains.exposed.sql.deleteWhere
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
+import org.jetbrains.exposed.sql.update
 
 class StudentRepo : SchoolUsersInterface<StudentModel> {
 
@@ -67,19 +68,19 @@ class StudentRepo : SchoolUsersInterface<StudentModel> {
         }
     }
 
-
-    suspend fun updateRow(index: String, username: String, userType: String, classNbr: String, active: Boolean): Unit =
-        suspendTransaction {
+    suspend fun updateRow(index: String, username: String, userType: String, classNbr: String, active: Boolean): Unit = suspendTransaction {
             val updatedRow = StudentModel(index, username, userType, classNbr, active)
             val student = StudentsDAO.find { (StudentsTable.index eq updatedRow.index) }.firstOrNull()
 
             if (student == null)
                 return@suspendTransaction
 
-            student.username = updatedRow.username
-            student.userType = updatedRow.userType
-            student.classNbr = updatedRow.classNbr
-            student.active = updatedRow.active
+            StudentsTable.update ({ StudentsTable.index eq updatedRow.index }) {
+                it[StudentsTable.username] = updatedRow.username
+                it[StudentsTable.userType] = updatedRow.userType
+                it[StudentsTable.classNbr] = updatedRow.classNbr
+                it[StudentsTable.active] = updatedRow.active
+            }
         }
 
 }

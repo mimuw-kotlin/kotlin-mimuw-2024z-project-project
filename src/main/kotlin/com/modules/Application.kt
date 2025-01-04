@@ -1,10 +1,7 @@
 package com.modules
 
 import com.modules.db.other.UserTypes
-import com.modules.db.repos.AdminRepo
-import com.modules.db.repos.PasswordRepo
-import com.modules.db.repos.StudentRepo
-import com.modules.db.repos.TeacherRepo
+import com.modules.db.repos.*
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
@@ -21,6 +18,7 @@ fun Application.module() {
     val teacherRepo = TeacherRepo()
     val passwordRepo = PasswordRepo()
     val adminRepo = AdminRepo()
+    val classRepo = ClassRepo()
 
     install(Sessions) {
         val secretEncryptKey = hex(this@module.environment.config.property("session.secretEncryptKey").getString())
@@ -69,5 +67,5 @@ fun Application.module() {
     configureHTTP()
     configureSecurity(passwordRepo, teacherRepo, studentRepo, adminRepo)
     configureRouting(studentRepo, teacherRepo, passwordRepo, adminRepo)
-    configureRoutingAdmin(studentRepo, teacherRepo, passwordRepo, adminRepo)
+    configureRoutingAdmin(studentRepo, teacherRepo, passwordRepo, adminRepo, classRepo)
 }

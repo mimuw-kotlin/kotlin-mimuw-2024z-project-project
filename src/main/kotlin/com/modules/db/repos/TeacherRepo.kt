@@ -11,6 +11,7 @@ import com.modules.db.tables.TeachersTable
 import com.modules.db.teacherDAOToModel
 import org.jetbrains.exposed.sql.deleteWhere
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
+import org.jetbrains.exposed.sql.update
 
 class TeacherRepo : SchoolUsersInterface<TeacherModel>{
 
@@ -72,10 +73,12 @@ class TeacherRepo : SchoolUsersInterface<TeacherModel>{
 
         if (teacher == null)
             return@suspendTransaction
-
-        teacher.username = updatedRow.username
-        teacher.userType = updatedRow.userType
-        teacher.classNbr = updatedRow.classNbr
-        teacher.active = updatedRow.active
+        println("TEACHER ACTIVE VALUE: $active")
+        TeachersTable.update ({ TeachersTable.index eq updatedRow.index }) {
+            it[TeachersTable.username] = updatedRow.username
+            it[TeachersTable.userType] = updatedRow.userType
+            it[TeachersTable.classNbr] = updatedRow.classNbr
+            it[TeachersTable.active] = updatedRow.active
+        }
     }
 }
