@@ -119,14 +119,21 @@ fun Application.configureRoutingAdmin(studentRepo: StudentRepo,
 
                         println(yellow + "check params" + reset)
                         if (!checkEditUserParams(post, studentRepo, teacherRepo, classRepo))
+                        {
+                            println(yellow + "!!!!!!CHECK EDIT USER PARAMS FAILED!!!!!" + reset)
                             call.respondRedirect("/admin/editUsers?status=editUserParamsError")
+                            return@post
+                        }
 
                         println(yellow + "check usertype" + reset)
                         val realUserType = checkUserType(userIndex, teacherRepo, studentRepo)
 
 
                         if (realUserType == UserTypes.getStudentType() && userType != realUserType)
+                        {
                             call.respondRedirect("/admin/editUsers?status=studentTypeMismatch")
+                            return@post
+                        }
 
                         println(yellow + "old username" + reset)
                         val oldUsername = when (realUserType) {
@@ -138,7 +145,10 @@ fun Application.configureRoutingAdmin(studentRepo: StudentRepo,
 
 //                      this means that somebody is trying to change index of a user
                         if (oldUsername == null)
+                        {
                             call.respondRedirect("/admin/editUsers?status=oldUsernameNull")
+                            return@post
+                        }
 
                         println(yellow + "old username != username" + reset)
                         if (oldUsername != username)
@@ -154,9 +164,10 @@ fun Application.configureRoutingAdmin(studentRepo: StudentRepo,
                             }
                         println(yellow + "AFTER WHEN" + reset)
                         call.respondRedirect("/admin/editUsers?status=0")
-                        }
-                    call.respondRedirect("/admin/editUsers?status=someParamisNull")
+                        return@post
                     }
+                    call.respondRedirect("/admin/editUsers?status=someParamisNull")
+                }
 
                 get("/activateUsers") {
                     call.respondText("Activate user")
