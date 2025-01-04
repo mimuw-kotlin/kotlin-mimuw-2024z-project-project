@@ -73,7 +73,6 @@ class TeacherRepo : SchoolUsersInterface<TeacherModel>{
 
         if (teacher == null)
             return@suspendTransaction
-        println("TEACHER ACTIVE VALUE: $active")
         TeachersTable.update ({ TeachersTable.index eq updatedRow.index }) {
             it[TeachersTable.username] = updatedRow.username
             it[TeachersTable.userType] = updatedRow.userType

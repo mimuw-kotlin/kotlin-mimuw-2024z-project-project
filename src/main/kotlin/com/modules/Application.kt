@@ -26,7 +26,7 @@ fun Application.module() {
 
         cookie<UserSession>("user_session", SessionStorageMemory()) {
             cookie.path = "/"
-            cookie.maxAgeInSeconds = 30
+            cookie.maxAgeInSeconds = 240
             transform(SessionTransportTransformerEncrypt(secretEncryptKey, secretSignKey))
         }
     }

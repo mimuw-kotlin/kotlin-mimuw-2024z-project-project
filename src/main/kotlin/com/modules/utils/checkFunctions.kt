@@ -93,35 +93,52 @@ suspend fun checkEditUserParams(
     val active = post["active"]
     val userType = post["userType"]
 
+    val red = "\u001B[31m"
+    val reset = "\u001B[0m"
+    val yellow = "\u001B[33m"
+
+    println(red + "userIndex= ${userIndex}" + reset)
+    println(red + "userName= ${userName}" + reset)
+    println(red + "classNbr= ${classNbr}" + reset)
+    println(red + "active= ${active}" + reset)
+    println(red + "userType= ${userType}" + reset)
+
     if (userIndex == null || userName == null || classNbr == null || active == null || userType == null)
+    {
+        println(red + "null in checkEditUserParams" + reset)
         return false
+    }
 
     if (!checkUsername(userName))
+    {
+        println(red + "checkUsername got false" + reset)
         return false
-
-    val yellow = "\u001B[33m"
-    val reset = "\u001B[0m"
-    println(yellow + "Before checkClassNbr" + reset)
+    }
 
     if (classRepo.getByClassNbr(classNbr) == null)
+    {
+        println(red + "classRepo.getByClassNbr got null" + reset)
         return false
+    }
 
-    println(yellow + "active= ${active}" + reset)
     if (active.lowercase() != "true" && active.lowercase() != "false")
+    {
+        println(red + "active.lowercase() got false" + reset)
         return false
+    }
 
     println(yellow + "user type" + reset)
     if (!UserTypes.isAllowedType(userType))
+    {
+        println(red + "UserTypes.isAllowedType got false" + reset)
         return false
+    }
 
-    println("checking indes in repos")
-    if (studentRepo.getByIndex(userIndex) == null && teacherRepo.getByIndex(userIndex) == null)
-        return false
-
-    return true
+    println(red + "checkign if index exists" + reset)
+    return !(studentRepo.getByIndex(userIndex) == null && teacherRepo.getByIndex(userIndex) == null)
 }
 
 fun checkUsername(username: String): Boolean {
-    val nameRegex = Regex("^[a-zA-Z]+$")
+    val nameRegex = Regex("^[a-zA-Z0-9]+$")
     return nameRegex.matches(username)
 }
