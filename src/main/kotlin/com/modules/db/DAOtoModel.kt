@@ -31,8 +31,8 @@ fun classDAOToModel(dao: ClassesDAO) = ClassModel(
 )
 
 fun subjectDAOToModel(dao: SubjectsDAO) = SubjectModel(
-    subjectIndex = dao.subjectIndex,
-    subjectName = dao.subjectName,
+    index = dao.index,
+    name = dao.name,
     description = dao.description
 )
 

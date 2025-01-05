@@ -22,6 +22,8 @@ object AppConsts {
     const val LOGIN_FORM_AUTH = "login-form-auth"
 
     const val INDEX = "index"
+    const val SUBJECT_INDEX = "subjectIndex"
+    const val SUBJECTS = "subjects"
     const val USERNAME = "username"
     const val CLASS_NBR = "classNbr"
     const val ACTIVE = "active"

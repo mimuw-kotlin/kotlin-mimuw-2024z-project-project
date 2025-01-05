@@ -126,3 +126,7 @@ fun checkUsername(username: String): Boolean {
     val nameRegex = Regex(AppConsts.USERNAME_REGEX)
     return nameRegex.matches(username)
 }
+
+suspend fun checkSubjectIndex(subjectIndex: String, subjectRepo: SubjectRepo): Boolean {
+    return subjectRepo.getByIndex(subjectIndex) != null
+}

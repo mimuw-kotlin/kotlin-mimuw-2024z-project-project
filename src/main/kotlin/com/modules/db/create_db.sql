@@ -38,7 +38,7 @@ CREATE TABLE Teachers (
   FOREIGN KEY (subject_index) REFERENCES Subjects(subject_index)
 );
 
-DROP TABLE IF EXISTS Subjects;
+DROP TABLE IF EXISTS Subjects CASCADE;
 CREATE TABLE Subjects (
    id SERIAL PRIMARY KEY,
    subject_index VARCHAR(20) NOT NULL UNIQUE,
@@ -46,6 +46,9 @@ CREATE TABLE Subjects (
    description VARCHAR(555) DEFAULT 'No description available'
 );
 INSERT INTO Subjects (subject_index, subject_name) VALUES ('N/A', 'N/A');
+INSERT INTO Subjects (subject_index, subject_name) VALUES ('MAT', 'Matematyka');
+INSERT INTO Subjects (subject_index, subject_name) VALUES ('ANG', 'Angielski');
+INSERT INTO Subjects (subject_index, subject_name) VALUES ('POL', 'Polski');
 
 DROP TABLE IF EXISTS passwords;
 CREATE TABLE passwords (

@@ -4,7 +4,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 class SubjectModel(
-    val subjectIndex: String,
-    val subjectName: String,
+    val index: String,
+    val name: String,
     val description: String
 )

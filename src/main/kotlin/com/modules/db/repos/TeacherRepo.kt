@@ -65,6 +65,8 @@ class TeacherRepo : SchoolUsersInterface<TeacherModel>{
             username = newRow.username
             userType = newRow.userType
             classNbr = newRow.classNbr
+            subjectIndex = newRow.subjectIndex
+            active = newRow.active
         }
     }
 
@@ -84,6 +86,7 @@ class TeacherRepo : SchoolUsersInterface<TeacherModel>{
                 it[TeachersTable.username] = updatedRow.username
                 it[TeachersTable.userType] = updatedRow.userType
                 it[TeachersTable.classNbr] = updatedRow.classNbr
+                it[TeachersTable.subjectIndex] = updatedRow.subjectIndex
                 it[TeachersTable.active] = updatedRow.active
             }
 

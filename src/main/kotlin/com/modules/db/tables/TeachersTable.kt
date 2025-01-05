@@ -11,7 +11,7 @@ object TeachersTable : IntIdTable(ConstsDB.TEACHERS){
     val userType = varchar(ConstsDB.USER_TYPE, 20).default(UserTypes.getType(ConstsDB.TEACHER))
     val classNbr = varchar(ConstsDB.CLASS_NBR, 3).references(ClassesTable.classNbr,
         onDelete = ReferenceOption.CASCADE)
-    val subjectIndex = varchar(ConstsDB.SUBJECT_INDEX, 20).references(SubjectsTable.subjectIndex,
+    val subjectIndex = varchar(ConstsDB.SUBJECT_INDEX, 20).references(SubjectsTable.index,
         onDelete = ReferenceOption.CASCADE)
     val active = bool(ConstsDB.ACTIVE).default(false)
 }

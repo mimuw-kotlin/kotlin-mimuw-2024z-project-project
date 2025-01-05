@@ -21,6 +21,7 @@ fun Application.module() {
     val passwordRepo = PasswordRepo()
     val adminRepo = AdminRepo()
     val classRepo = ClassRepo()
+    val subjectRepo = SubjectRepo()
 
     install(Sessions) {
         val secretEncryptKey = hex(this@module.environment.config.property("session.secretEncryptKey").getString())
@@ -81,6 +82,6 @@ fun Application.module() {
     configureHTTP()
     configureSecurity(passwordRepo, teacherRepo, studentRepo, adminRepo)
     configureRouting(studentRepo, teacherRepo, passwordRepo, adminRepo)
-    configureRoutingAdmin(studentRepo, teacherRepo, passwordRepo, adminRepo, classRepo)
+    configureRoutingAdmin(studentRepo, teacherRepo, passwordRepo, adminRepo, classRepo, subjectRepo)
     configureRoutingTeacher(studentRepo, teacherRepo, passwordRepo, classRepo)
 }
