@@ -28,6 +28,7 @@ object AppConsts {
     const val BASIC_AUTH_SESSION = "basic-auth-session"
     const val ADMIN_SESSION = "admin-session"
     const val TEACHER_SESSION = "teacher-session"
+    const val STUDENT_SESSION = "student-session"
     const val LOGIN_FORM_AUTH = "login-form-auth"
 
     const val INDEX = "index"

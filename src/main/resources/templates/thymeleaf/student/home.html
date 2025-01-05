@@ -1,15 +1,29 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <meta charset="UTF-8">
-    <title>Strona Główna Uczeń</title>
+    <title>Dziennik Uczeń</title>
 </head>
+
 <body>
 <h1> Strona główna dziennika </h1>
-
-<p> Witaj uczniu <span th:text="${username}"/> </p>
-
 <a href="/logout"> Wyloguj </a>
+
+<br>
+
+<h3 th:text="'Witaj: ' + ${student.username} + ', twój index to: ' + ${student.index} "></h3>
+
+<p th:if="${student.classNbr} != 'N/A'" th:text="'Twoja klasa to: ' + ${student.classNbr}"></p>
+<p th:if="${student.classNbr} == 'N/A'" th:text="'Nie jesteś przypisany do żadnej klasy'"></p>
+<br>
+
+
+<ul>
+    <li> <a href="/student/showStudents"> Lista uczniów twojej klasy </a> </li>
+</ul>
+
+<p>---------------------------------------------------</p>
 
 </body>
 </html>

@@ -85,7 +85,7 @@ fun Application.configureRoutingAdmin(studentRepo: StudentRepo,
                     val userIndex = queryParams[AppConsts.INDEX]
                     if (userIndex != null) {
                         val userType = checkUserType(userIndex, teacherRepo, studentRepo)
-
+                        val allClasses = classRepo.getAll()
 //                      STUDENT
                         if (userType == UserTypes.getStudentType()) {
                             val user = studentRepo.getByIndex(userIndex)
@@ -93,7 +93,8 @@ fun Application.configureRoutingAdmin(studentRepo: StudentRepo,
                                 call.respond(
                                     ThymeleafContent(
                                         "admin/editChosenUser",
-                                        mapOf(AppConsts.USER to user)
+                                        mapOf(AppConsts.USER to user,
+                                            AppConsts.CLASSES to allClasses)
                                     )
                                 )
                                 return@get
@@ -109,7 +110,8 @@ fun Application.configureRoutingAdmin(studentRepo: StudentRepo,
                                 call.respond(
                                     ThymeleafContent(
                                         "admin/editChosenUser",
-                                        mapOf(AppConsts.USER to user, AppConsts.SUBJECTS to allSubjects)
+                                        mapOf(AppConsts.USER to user, AppConsts.SUBJECTS to allSubjects,
+                                            AppConsts.CLASSES to allClasses)
                                     )
                                 )
                                 return@get
@@ -196,27 +198,22 @@ fun Application.configureRoutingAdmin(studentRepo: StudentRepo,
                             return@post
                         }
 
+                        if (classRepo.getTeacherFromClass(classNbr) != null) {
+                            call.respondRedirect("/admin/editUsers?" + AppConsts.STATUS + AppConsts.EQUALS + "classAlreadyHasTeacher")
+                            return@post
+                        }
+
                         if (oldUsername != username)
                             passwordRepo.updateUsername(oldUsername, username)
-
-                        when (realUserType) {
-                            UserTypes.getTeacherType() -> teacherRepo.updateRow(
-                                userIndex,
-                                username,
-                                userType,
-                                classNbr,
-                                subjectIndex,
-                                boolActive
-                            )
-                            UserTypes.getHeadmasterType() -> teacherRepo.updateRow(
-                                userIndex,
-                                username,
-                                userType,
-                                classNbr,
-                                subjectIndex,
-                                boolActive
-                            )
-                        }
+                        teacherRepo.updateRow(
+                            userIndex,
+                            username,
+                            userType,
+                            classNbr,
+                            subjectIndex,
+                            boolActive
+                        )
+                        classRepo.updateRow(classNbr, username)
                     }
                     call.respondRedirect("/admin/editUsers?" + AppConsts.STATUS + AppConsts.EQUALS + "0")
                     return@post

@@ -20,8 +20,11 @@
         <input type="text" id="username" th:name="'username'" th:value="${user.username}" />
     </div>
     <div>
+
         <label for="classNbr">Klasa:</label>
-        <input type="text" id="classNbr" th:name="'classNbr'" th:value="${user.classNbr}" />
+        <select id="classNbr" th:name="'classNbr'">
+            <option th:each="class : ${classes}" th:value="${class.classNbr}" th:text="${class.classNbr}" th:selected="${class.classNbr} == ${user.classNbr}"></option>
+        </select>
     </div>
 
     <div th:if="${user.userType} == 'student'">

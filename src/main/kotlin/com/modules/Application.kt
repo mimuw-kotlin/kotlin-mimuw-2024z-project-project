@@ -74,6 +74,19 @@ fun Application.module() {
                 call.respondRedirect("/")
             }
         }
+
+        session<UserSession>(AppConsts.STUDENT_SESSION) {
+            validate { session: UserSession? ->
+                if (session != null && (session.userType == UserTypes.getStudentType() ))
+                    return@validate session
+                else
+                    return@validate null
+            }
+
+            challenge {
+                call.respondRedirect("/")
+            }
+        }
     }
 
     configureSockets()
@@ -84,4 +97,5 @@ fun Application.module() {
     configureRouting(studentRepo, teacherRepo, passwordRepo, adminRepo)
     configureRoutingAdmin(studentRepo, teacherRepo, passwordRepo, adminRepo, classRepo, subjectRepo)
     configureRoutingTeacher(studentRepo, teacherRepo, passwordRepo, classRepo)
+    configureRoutingStudent(studentRepo, teacherRepo, classRepo)
 }

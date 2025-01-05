@@ -16,6 +16,7 @@ import com.modules.db.suspendTransaction
 import com.modules.db.tables.ClassesTable
 import com.modules.db.tables.PasswordsTable
 import com.modules.db.tables.TeachersTable
+import com.modules.db.teacherDAOToModel
 import org.jetbrains.exposed.sql.deleteWhere
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.transactions.TransactionManager
@@ -68,5 +69,20 @@ class ClassRepo  {
 
 //      This is needed so that we don't get old data from the database
         TransactionManager.current().commit()
+    }
+
+    suspend fun getTeacherFromClass(classNbr: String): TeacherModel? = suspendTransaction {
+        val cls = ClassesDAO.find { (ClassesTable.classNbr eq classNbr) }.firstOrNull()
+        if (cls == null)
+            return@suspendTransaction null
+
+        val clsTeacherName = cls.classTeacherName ?: return@suspendTransaction null
+
+        val teacher = TeachersDAO.find { TeachersTable.username eq clsTeacherName}.firstOrNull()
+
+        if (teacher == null)
+            return@suspendTransaction null
+
+        return@suspendTransaction teacherDAOToModel(teacher)
     }
 }
