@@ -101,4 +101,8 @@ class StudentRepo : SchoolUsersInterface<StudentModel> {
         TransactionManager.current().commit()
         true
     }
+
+    suspend fun getStudentsFromGivenClass(classNbr: String): List<StudentModel> = suspendTransaction {
+        StudentsDAO.find { StudentsTable.classNbr eq classNbr }.map(::studentDAOToModel).sortedBy { it.username }
+    }
 }

@@ -109,6 +109,29 @@ fun Application.configureRoutingTeacher(studentRepo: StudentRepo,
                     call.respondRedirect("/teacher/classes?" + AppConsts.STATUS + AppConsts.EQUALS + "success")
                     return@post
                 }
+
+                get("/showTeachers") {
+                    val allTeachers = teacherRepo.getAll()
+                    call.respond(ThymeleafContent("teacher/showTeachers", mapOf(AppConsts.TEACHERS to allTeachers)))
+                    return@get
+                }
+
+                get("/showStudents") {
+                    val session = call.sessions.get<UserSession>()
+                    val teacher = teacherRepo.getByUsername(session!!.username)
+
+                    if (teacher == null)
+                    {
+                        call.sessions.clear<UserSession>()
+                        call.respondRedirect("/")
+                        return@get
+                    }
+
+                    val allStudents = studentRepo.getStudentsFromGivenClass(teacher.classNbr)
+                    call.respond(ThymeleafContent("teacher/showStudents", mapOf(AppConsts.STUDENTS to allStudents,
+                        AppConsts.CLASS_NBR to teacher.classNbr)))
+                    return@get
+                }
             }
         }
     }

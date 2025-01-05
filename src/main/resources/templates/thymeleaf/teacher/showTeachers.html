@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Lista nauczycieli</title>
+</head>
+<body>
+<h1>Lista nauczycieli</h1>
+<a href="/teacher/home">Powrót</a>
+
+<br>
+
+<table>
+    <thead>
+    <tr>
+        <th>Index</th>
+        <th>Nazwa Użytkownika</th>
+        <th>Klasa</th>
+        <th>Typ</th>
+        <th>ID Przedmiotu</th>
+        <th>Aktywny</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="teacher : ${teachers}">
+
+        <td th:text="${teacher.index}"></td>
+        <td th:text="${teacher.username}"></td>
+        <td th:text="${teacher.classNbr}"></td>
+        <td th:text="${teacher.userType}"></td>
+        <td th:text="${teacher.subjectIndex}"></td>
+        <td th:text="${teacher.active}"></td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>
