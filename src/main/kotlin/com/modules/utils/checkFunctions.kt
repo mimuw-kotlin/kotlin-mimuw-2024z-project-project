@@ -130,3 +130,24 @@ fun checkUsername(username: String): Boolean {
 suspend fun checkSubjectIndex(subjectIndex: String, subjectRepo: SubjectRepo): Boolean {
     return subjectRepo.getByIndex(subjectIndex) != null
 }
+
+fun checkAddSubjectParams(post: Parameters): Boolean {
+    val subjectIndex = post[AppConsts.INDEX]
+    val subjectName = post[AppConsts.NAME]
+    val description = post[AppConsts.DESCRIPTION]
+
+    if (subjectIndex == null || subjectName == null || description == null)
+        return false
+
+    val indexRegex = Regex(AppConsts.SUBJECT_INDEX_REGEX)
+    if (!indexRegex.matches(subjectIndex) || subjectIndex.length <= 1 || subjectIndex.length > 20)
+        return false
+
+    if (subjectName.length <= 1 || subjectName.length > 70)
+        return false
+
+    if (description.length > 555)
+        return false
+
+    return true
+}

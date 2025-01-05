@@ -3,6 +3,7 @@ package com.modules.db.repos
 import com.modules.db.DAO.SubjectsDAO
 import com.modules.db.DAO.TeachersDAO
 import com.modules.db.dataModels.SubjectModel
+import com.modules.db.other.ConstsDB
 import com.modules.db.subjectDAOToModel
 import com.modules.db.suspendTransaction
 import com.modules.db.tables.SubjectsTable
@@ -34,13 +35,13 @@ class SubjectRepo {
 
     suspend fun removeByIndex(index: String) = suspendTransaction {
         val subject = SubjectsDAO.find { (SubjectsTable.index eq index) }.firstOrNull()
-        if (subject == null)
+        if (subject == null || subject.index == ConstsDB.N_A)
             return@suspendTransaction false
 
         val allSubjectTeachers = TeachersDAO.find { TeachersTable.subjectIndex eq index }
         allSubjectTeachers.forEach {
             TeachersTable.update({ TeachersTable.index eq it.index }) {
-                it[TeachersTable.subjectIndex] = "N/A"
+                it[TeachersTable.subjectIndex] = ConstsDB.N_A
             }
         }
         val rowsDeleted = SubjectsTable.deleteWhere { SubjectsTable.index eq index }

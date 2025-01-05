@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Edycja wybranego przedmiotu</title>
+</head>
+<body>
+<a href="/admin/subjects">Powrót</a>
+
+<h1>Edytuj Przedmiot</h1>
+
+<form th:action="'/admin/editSubject'" method="post">
+    <div>
+        <label for="index">Index:</label>
+        <input type="text" id="index" th:name="'index'" th:value="${subject.index}" readonly />
+    </div>
+    <div>
+        <label for="name">Nazwa:</label>
+        <input type="text" id="name" th:name="'name'" th:value="${subject.name}" />
+    </div>
+    <div>
+        <label for="description">Opis:</label>
+        <input type="text" id="description" th:name="'description'" th:value="${subject.description}" />
+    </div>
+    <div>
+        <button type="submit">Zapisz zmiany</button>
+    </div>
+</form>
+
+</body>
+</html>

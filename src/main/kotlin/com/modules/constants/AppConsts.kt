@@ -11,6 +11,10 @@ object AppConsts {
     const val N_A = "N/A"
     const val INACTIVE = "inactive"
 
+    const val SUBJECT = "subject"
+    const val NAME = "name"
+    const val DESCRIPTION = "description"
+
     const val STUDENTS = "students"
     const val TEACHERS = "teachers"
     const val STATUS = "status"
@@ -30,5 +34,6 @@ object AppConsts {
     const val USER_TYPE = "userType"
 
     const val USERNAME_REGEX = "^[a-zA-Z0-9]+$"
+    const val SUBJECT_INDEX_REGEX = "^[a-zA-Z0-9]+$"
     const val EQUALS = "="
 }

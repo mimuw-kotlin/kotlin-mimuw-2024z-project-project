@@ -56,45 +56,5 @@
     </div>
 </form>
 
-<!--<form th:action="'/admin/editUser'" method="post">-->
-<!--    <table>-->
-<!--        <thead>-->
-<!--        <tr>-->
-<!--            <th>Index</th>-->
-<!--            <th>Nazwa Użytkownika</th>-->
-<!--            <th>Klasa</th>-->
-<!--            <th>Typ</th>-->
-<!--            <th>Aktywny</th>-->
-<!--        </tr>-->
-<!--        </thead>-->
-<!--        <tbody>-->
-<!--        <tr>-->
-<!--            <td><input type="text" th:name="'index'" th:value="${user.index}" readonly /></td>-->
-<!--            <td><input type="text" th:name="'username'" th:value="${user.username}" /></td>-->
-<!--            <td><input type="text" th:name="'classNbr'" th:value="${user.classNbr}" /></td>-->
-<!--            <td th:if="${user.userType} == 'student'">-->
-<!--                <input type="text" th:name="'userType'" th:value="${user.userType}" readonly />-->
-<!--            </td>-->
-<!--            <td th:if="${user.userType} != 'student'">-->
-<!--                <select th:name="'userType'">-->
-<!--                    <option th:value="'teacher'"  th:text="'teacher'" th:selected="${user.userType} == 'teacher'"></option>-->
-<!--                    <option th:value="'headmaster'" th:text="'headmaster'" th:selected="${user.userType} == 'headmaster'"></option>-->
-<!--                </select>-->
-<!--            </td>-->
-
-<!--            <td>-->
-<!--                <select th:name="'active'">-->
-<!--                    <option th:value="${true}" th:text="'true'" th:selected="${user.active} == ${true}"></option>-->
-<!--                    <option th:value="${false}" th:text="'false'" th:selected="${user.active} == ${false}"></option>-->
-<!--                </select>-->
-<!--            </td>-->
-<!--            <td>-->
-<!--                <button type="submit">Zapisz zmiany</button>-->
-<!--            </td>-->
-<!--        </tr>-->
-<!--        </tbody>-->
-<!--    </table>-->
-<!--</form>-->
-
 </body>
 </html>

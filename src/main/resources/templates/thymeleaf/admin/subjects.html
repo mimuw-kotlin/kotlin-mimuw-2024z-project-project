@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Przedmioty</title>
+    <script>
+        function toggleTable(tableName) {
+            let table = document.getElementById(tableName);
+            if (table.style.display === "none") {
+                table.style.display = "table";
+            } else {
+                table.style.display = "none";
+            }
+        }
+    </script>
+
+</head>
+
+<body th:with="SUBJECTS_TABLE='subjectsTable'">
+
+<a href="/admin/controlPanel">Powrót</a>
+
+<p th:if="${status} != null and ${status} != 'success'" th:text="${status}" style="color: darkred"></p>
+<p th:if="${status} == 'success'" th:text="'Zmiany zapisane!'" style="color: darkgreen"></p>
+
+<h1>Dodaj Przedmiot </h1>
+
+<button onclick=toggleTable("addSubjectTable")>Pokaż/Ukryj</button>
+
+<br>
+
+<form action="/admin/addSubject" method="post">
+<table id="addSubjectTable">
+    <thead>
+    <tr>
+        <th>Index</th>
+        <th>Nazwa</th>
+        <th>Opis</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td>
+            <label for="index"></label>
+            <input type="text" id="index" name="index" maxlength="20" minlength="2" required>
+        </td>
+        <td >
+            <label for="name"></label>
+            <input type="text" id="name" name="name" maxlength="70" minlength="2" required>
+        </td>
+        <td>
+            <label for="description"></label>
+            <input type="text" id="description" name="description" maxlength="555" value="No description available">
+        </td>
+        <td>
+            <button type="submit">Dodaj</button>
+        </td>
+    </tr>
+    </tbody>
+</table>
+</form>
+
+<br>
+
+<h1>Lista Przedmiotów </h1>
+
+<button onclick=toggleTable("subjectsTable")>Pokaż/Ukryj</button>
+
+<br>
+
+<table id="subjectsTable">
+    <thead>
+    <tr>
+        <th>Index</th>
+        <th>Nazwa</th>
+        <th>Opis</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="subject : ${subjects}">
+        <td th:text="${subject.index}"></td>
+        <td th:text="${subject.name}"></td>
+        <td th:text="${subject.description}"></td>
+        <td>
+            <a th:href="'/admin/editSubject?index=' + ${subject.index}">Edytuj</a>
+        </td>
+
+        <td>
+            <form th:action="'/admin/deleteSubject'" method="post">
+                <input type="hidden" th:name="index" th:value="${subject.index}" />
+                <button type="submit">Usuń</button>
+            </form>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+</body>
+</html>

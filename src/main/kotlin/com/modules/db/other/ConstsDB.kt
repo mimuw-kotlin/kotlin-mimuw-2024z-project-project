@@ -9,7 +9,7 @@ object ConstsDB{
     const val ADMIN = "admin"
 
 //  Names same as in the database fields
-    val N_A = null
+    const val N_A = "N/A"
     const val INDEX = "index"
     const val USERNAME = "username"
     const val USER_TYPE = "user_type"
