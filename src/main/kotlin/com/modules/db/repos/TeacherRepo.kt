@@ -68,21 +68,27 @@ class TeacherRepo : SchoolUsersInterface<TeacherModel>{
         }
     }
 
-    suspend fun updateRow(index: String, username: String, userType: String, classNbr: String, active: Boolean): Unit = suspendTransaction {
-        val updatedRow = TeacherModel(index, username, userType, classNbr, active)
-        val teacher = TeachersDAO.find {(TeachersTable.index eq updatedRow.index)}.firstOrNull()
+    suspend fun updateRow(
+        index: String,
+        username: String,
+        userType: String,
+        classNbr: String,
+        subjectIndex: String,
+        active: Boolean): Unit = suspendTransaction {
+            val updatedRow = TeacherModel(index, username, userType, classNbr, subjectIndex, active)
+            val teacher = TeachersDAO.find {(TeachersTable.index eq updatedRow.index)}.firstOrNull()
 
-        if (teacher == null)
-            return@suspendTransaction
-        TeachersTable.update ({ TeachersTable.index eq updatedRow.index }) {
-            it[TeachersTable.username] = updatedRow.username
-            it[TeachersTable.userType] = updatedRow.userType
-            it[TeachersTable.classNbr] = updatedRow.classNbr
-            it[TeachersTable.active] = updatedRow.active
-        }
+            if (teacher == null)
+                return@suspendTransaction
+            TeachersTable.update ({ TeachersTable.index eq updatedRow.index }) {
+                it[TeachersTable.username] = updatedRow.username
+                it[TeachersTable.userType] = updatedRow.userType
+                it[TeachersTable.classNbr] = updatedRow.classNbr
+                it[TeachersTable.active] = updatedRow.active
+            }
 
-//      This is needed so that we don't get old data from the database
-        TransactionManager.current().commit()
+    //      This is needed so that we don't get old data from the database
+            TransactionManager.current().commit()
     }
 
     suspend fun toggleActiveByIndex(index: String): Boolean = suspendTransaction {

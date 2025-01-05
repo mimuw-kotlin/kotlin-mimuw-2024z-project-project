@@ -21,6 +21,7 @@ fun teacherDAOToModel(dao: TeachersDAO) = TeacherModel(
     username = dao.username,
     userType = dao.userType,
     classNbr = dao.classNbr,
+    subjectIndex = dao.subjectIndex,
     active = dao.active
 )
 
@@ -30,7 +31,7 @@ fun classDAOToModel(dao: ClassesDAO) = ClassModel(
 )
 
 fun subjectDAOToModel(dao: SubjectsDAO) = SubjectModel(
-    subjectCode = dao.subjectIndex,
+    subjectIndex = dao.subjectIndex,
     subjectName = dao.subjectName,
     description = dao.description
 )

@@ -32,17 +32,20 @@ CREATE TABLE Teachers (
   user_type VARCHAR(20) DEFAULT 'teacher',
   is_class_teacher BOOLEAN DEFAULT FALSE,
   class_nbr VARCHAR(3) DEFAULT 'N/A',
+  subject_index VARCHAR(20) DEFAULT 'N/A',
   active BOOLEAN DEFAULT FALSE,
-  FOREIGN KEY (class_nbr) REFERENCES Classes(class_nbr)
+  FOREIGN KEY (class_nbr) REFERENCES Classes(class_nbr),
+  FOREIGN KEY (subject_index) REFERENCES Subjects(subject_index)
 );
 
 DROP TABLE IF EXISTS Subjects;
 CREATE TABLE Subjects (
    id SERIAL PRIMARY KEY,
-   subject_index VARCHAR(10) NOT NULL UNIQUE,
+   subject_index VARCHAR(20) NOT NULL UNIQUE,
    subject_name VARCHAR(70) NOT NULL,
    description VARCHAR(555) DEFAULT 'No description available'
 );
+INSERT INTO Subjects (subject_index, subject_name) VALUES ('N/A', 'N/A');
 
 DROP TABLE IF EXISTS passwords;
 CREATE TABLE passwords (

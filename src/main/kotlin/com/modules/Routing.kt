@@ -46,7 +46,6 @@ fun Application.configureRouting(studentRepo: StudentRepo,
     }
 
     routing {
-        staticResources("/static", "static")
 
         get("/") {
             call.respond(ThymeleafContent("beforeLogin/startPage", mapOf(AppConsts.SESSION to AppConsts.EMPTY_STRING)))
@@ -115,6 +114,7 @@ fun Application.configureRouting(studentRepo: StudentRepo,
                         username = username,
                         userType = UserTypes.getType(ConstsDB.TEACHER),
                         classNbr = AppConsts.N_A,
+                            subjectIndex = AppConsts.N_A,
                         active = false
                     )
                     )
@@ -132,7 +132,16 @@ fun Application.configureRouting(studentRepo: StudentRepo,
             get("/home") {
                 val session = call.sessions.get<UserSession>()
                 val username = session!!.username
-                call.respond(ThymeleafContent("afterLogin/homepage", mapOf(AppConsts.USERNAME to username)))
+                if (session.userType == UserTypes.getStudentType())
+                {
+                    call.respond(ThymeleafContent("student/home", mapOf(AppConsts.USERNAME to username)))
+                    return@get
+                }
+                else
+                {
+                    call.respond(ThymeleafContent("teacher/controlPanel", mapOf(AppConsts.USERNAME to username)))
+                    return@get
+                }
             }
         }
     }

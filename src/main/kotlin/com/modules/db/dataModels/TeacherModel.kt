@@ -8,5 +8,6 @@ data class TeacherModel(
     val username: String,
     val userType: String,
     val classNbr: String,
+    val subjectIndex: String,
     val active: Boolean
 )

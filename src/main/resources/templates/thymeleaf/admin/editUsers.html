@@ -65,6 +65,7 @@
     <th>Nazwa Użytkownika</th>
     <th>Klasa</th>
     <th>Typ</th>
+    <th>ID Przedmiotu</th>
     <th>Aktywny</th>
   </tr>
   </thead>
@@ -75,6 +76,7 @@
     <td th:text="${teacher.username}"></td>
     <td th:text="${teacher.classNbr}"></td>
     <td th:text="${teacher.userType}"></td>
+    <td th:text="${teacher.subjectIndex}"></td>
     <td th:text="${teacher.active}"></td>
     <td>
       <a th:href="'/admin/editChosenUser?index=' + ${teacher.index}">Edytuj</a>
