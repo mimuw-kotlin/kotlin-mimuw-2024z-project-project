@@ -1,5 +1,6 @@
 package com.modules
 
+import com.modules.constants.AppConsts
 import com.modules.db.other.UserTypes
 import com.modules.db.repos.*
 import io.ktor.http.*
@@ -8,6 +9,7 @@ import io.ktor.server.auth.*
 import io.ktor.server.response.*
 import io.ktor.server.sessions.*
 import io.ktor.util.*
+import org.h2.engine.User
 
 fun main(args: Array<String>) {
     io.ktor.server.netty.EngineMain.main(args)
@@ -33,7 +35,7 @@ fun Application.module() {
 
     install(Authentication) {
 
-        session<UserSession>("auth-session") {
+        session<UserSession>(AppConsts.BASIC_AUTH_SESSION) {
             validate { session: UserSession? ->
                 if (session != null)
                     return@validate session
@@ -46,9 +48,22 @@ fun Application.module() {
             }
         }
 
-        session<UserSession>("admin-session") {
+        session<UserSession>(AppConsts.ADMIN_SESSION) {
             validate { session: UserSession? ->
                 if (session != null && session.userType == UserTypes.getAdminType())
+                    return@validate session
+                else
+                    return@validate null
+            }
+
+            challenge {
+                call.respondRedirect("/")
+            }
+        }
+
+        session<UserSession>(AppConsts.TEACHER_SESSION) {
+            validate { session: UserSession? ->
+                if (session != null && session.userType != UserTypes.getStudentType())
                     return@validate session
                 else
                     return@validate null
@@ -61,11 +76,11 @@ fun Application.module() {
     }
 
     configureSockets()
-    configureSerialization()
     configureDatabases(environment.config)
     configureTemplating()
     configureHTTP()
     configureSecurity(passwordRepo, teacherRepo, studentRepo, adminRepo)
     configureRouting(studentRepo, teacherRepo, passwordRepo, adminRepo)
     configureRoutingAdmin(studentRepo, teacherRepo, passwordRepo, adminRepo, classRepo)
+    configureRoutingTeacher(studentRepo, teacherRepo, passwordRepo, classRepo)
 }

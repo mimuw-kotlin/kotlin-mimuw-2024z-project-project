@@ -28,7 +28,7 @@ fun Application.configureSecurity(pswdRepo: PasswordRepo,
                                   studentRepo: StudentRepo,
                                   adminRepo: AdminRepo) {
     authentication {
-        form(name = "login-form-auth") {
+        form(name = AppConsts.LOGIN_FORM_AUTH) {
             userParamName = AppConsts.USERNAME
             passwordParamName = AppConsts.PASSWORD
 
@@ -46,7 +46,7 @@ fun Application.configureSecurity(pswdRepo: PasswordRepo,
     }
 
     routing {
-        authenticate("login-form-auth") {
+        authenticate(AppConsts.LOGIN_FORM_AUTH) {
             post("/login"){
 
                 val existingSession = call.sessions.get<UserSession>()
@@ -76,7 +76,7 @@ fun Application.configureSecurity(pswdRepo: PasswordRepo,
             }
         }
 
-        authenticate("auth-session") {
+        authenticate(AppConsts.BASIC_AUTH_SESSION) {
             get ("/logout") {
                 call.sessions.clear<UserSession>()
                 call.respondRedirect("/")

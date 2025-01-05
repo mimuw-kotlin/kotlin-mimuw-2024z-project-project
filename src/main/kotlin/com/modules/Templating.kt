@@ -34,18 +34,4 @@ fun Application.configureTemplating() {
             characterEncoding = "utf-8"
         })
     }
-    routing {
-        authenticate("auth-session") {
-            get("/homepage") {
-                val session = call.sessions.get<UserSession>()
-                if (session != null) {
-                    call.respond(ThymeleafContent("homepage", mapOf("user" to ThymeleafUser(1, session.username))))
-                }
-            }
-        }
-        get("/html-thymeleaf") {
-            call.respond(ThymeleafContent("index", mapOf("user" to ThymeleafUser(1, "user1"))))
-        }
-    }
 }
-data class ThymeleafUser(val id: Int, val name: String)

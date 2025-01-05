@@ -30,7 +30,7 @@ class TeacherRepo : SchoolUsersInterface<TeacherModel>{
     }
 
     override suspend fun getAll(): List<TeacherModel> = suspendTransaction {
-        TeachersDAO.all().map(::teacherDAOToModel)
+        TeachersDAO.all().map(::teacherDAOToModel).sortedBy { it.index }
     }
 
     override suspend fun getByIndex(index: String) = suspendTransaction {
@@ -83,5 +83,19 @@ class TeacherRepo : SchoolUsersInterface<TeacherModel>{
 
 //      This is needed so that we don't get old data from the database
         TransactionManager.current().commit()
+    }
+
+    suspend fun toggleActiveByIndex(index: String): Boolean = suspendTransaction {
+        val teacher = TeachersDAO.find {(TeachersTable.index eq index)}.firstOrNull()
+
+        if (teacher == null)
+            return@suspendTransaction false
+
+        TeachersTable.update ({ TeachersTable.index eq index }) {
+            it[TeachersTable.active] = !teacher.active
+        }
+
+        TransactionManager.current().commit()
+        true
     }
 }

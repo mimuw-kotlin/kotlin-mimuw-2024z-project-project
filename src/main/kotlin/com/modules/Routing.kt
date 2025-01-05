@@ -128,7 +128,7 @@ fun Application.configureRouting(studentRepo: StudentRepo,
             }
         }
 
-        authenticate("auth-session") {
+        authenticate(AppConsts.BASIC_AUTH_SESSION) {
             get("/home") {
                 val session = call.sessions.get<UserSession>()
                 val username = session!!.username

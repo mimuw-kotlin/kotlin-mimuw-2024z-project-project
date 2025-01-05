@@ -11,7 +11,6 @@ import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.ktor.server.thymeleaf.*
-import kotlin.reflect.typeOf
 
 fun Application.configureRoutingAdmin(studentRepo: StudentRepo,
                                     teacherRepo: TeacherRepo,
@@ -20,7 +19,7 @@ fun Application.configureRoutingAdmin(studentRepo: StudentRepo,
                                     classRepo: ClassRepo
 ) {
     routing {
-        authenticate("admin-session") {
+        authenticate(AppConsts.ADMIN_SESSION) {
             route("/admin") {
                 get("/controlPanel") {
                     call.respond(ThymeleafContent("admin/controlPanel", emptyMap()))
@@ -29,8 +28,12 @@ fun Application.configureRoutingAdmin(studentRepo: StudentRepo,
                 get("/deleteUsers") {
                     val students = studentRepo.getAll()
                     val teachers = teacherRepo.getAll()
-                    call.respond(ThymeleafContent("admin/deleteUsers",
-                            mapOf(AppConsts.STUDENTS to students, AppConsts.TEACHERS to teachers)))
+                    call.respond(
+                        ThymeleafContent(
+                            "admin/deleteUsers",
+                            mapOf(AppConsts.STUDENTS to students, AppConsts.TEACHERS to teachers)
+                        )
+                    )
                 }
 
                 post("/deleteUser") {
@@ -51,15 +54,26 @@ fun Application.configureRoutingAdmin(studentRepo: StudentRepo,
                     val teachers = teacherRepo.getAll()
                     val queryParams = call.request.queryParameters
 
-                    if (queryParams.isEmpty())
-                    {
-                        call.respond(ThymeleafContent("admin/editUsers",
-                            mapOf(AppConsts.STUDENTS to students, AppConsts.TEACHERS to teachers)))
+                    if (queryParams.isEmpty()) {
+                        call.respond(
+                            ThymeleafContent(
+                                "admin/editUsers",
+                                mapOf(AppConsts.STUDENTS to students, AppConsts.TEACHERS to teachers)
+                            )
+                        )
                         return@get
                     }
 
-                    call.respond(ThymeleafContent("admin/editUsers",
-                        mapOf(AppConsts.STUDENTS to students, AppConsts.TEACHERS to teachers, AppConsts.STATUS to queryParams[AppConsts.STATUS]!!)))
+                    call.respond(
+                        ThymeleafContent(
+                            "admin/editUsers",
+                            mapOf(
+                                AppConsts.STUDENTS to students,
+                                AppConsts.TEACHERS to teachers,
+                                AppConsts.STATUS to queryParams[AppConsts.STATUS]!!
+                            )
+                        )
+                    )
                 }
 
                 get("/editChosenUser") {
@@ -67,26 +81,31 @@ fun Application.configureRoutingAdmin(studentRepo: StudentRepo,
                     val userIndex = queryParams[AppConsts.INDEX]
                     if (userIndex != null) {
                         val userType = checkUserType(userIndex, teacherRepo, studentRepo)
-                        if (userType == UserTypes.getStudentType())
-                        {
+                        if (userType == UserTypes.getStudentType()) {
                             val user = studentRepo.getByIndex(userIndex)
                             if (user != null) {
-                                call.respond(ThymeleafContent("admin/editChosenUser",
-                                    mapOf(AppConsts.USER to user)))
+                                call.respond(
+                                    ThymeleafContent(
+                                        "admin/editChosenUser",
+                                        mapOf(AppConsts.USER to user)
+                                    )
+                                )
                                 return@get
                             }
                             call.respondRedirect("/admin/editUsers?" + AppConsts.STATUS + AppConsts.EQUALS + "noStudentWithGivenIndex")
                             return@get
-                        }
-                        else
-                        {
+                        } else {
                             val user = teacherRepo.getByIndex(userIndex)
                             if (user != null) {
-                                call.respond(ThymeleafContent("admin/editChosenUser",
-                                    mapOf(AppConsts.USER to user)))
+                                call.respond(
+                                    ThymeleafContent(
+                                        "admin/editChosenUser",
+                                        mapOf(AppConsts.USER to user)
+                                    )
+                                )
                                 return@get
                             }
-                            call.respondRedirect("/admin/editUsers? " + AppConsts.STATUS + AppConsts.EQUALS +"NoTeacherWithGivenIndex")
+                            call.respondRedirect("/admin/editUsers? " + AppConsts.STATUS + AppConsts.EQUALS + "NoTeacherWithGivenIndex")
                             return@get
                         }
                     }
@@ -104,7 +123,7 @@ fun Application.configureRoutingAdmin(studentRepo: StudentRepo,
                     if (userIndex != null && username != null && classNbr != null && active != null && userType != null) {
 
                         if (!checkEditUserParams(post, studentRepo, teacherRepo, classRepo)) {
-                            call.respondRedirect("/admin/editUsers?" + AppConsts.STATUS + AppConsts.EQUALS +"oneOrMoreParamsInvalid")
+                            call.respondRedirect("/admin/editUsers?" + AppConsts.STATUS + AppConsts.EQUALS + "oneOrMoreParamsInvalid")
                             return@post
                         }
 
@@ -133,9 +152,29 @@ fun Application.configureRoutingAdmin(studentRepo: StudentRepo,
                         val boolActive: Boolean = active.lowercase() == "true"
 
                         when (realUserType) {
-                            UserTypes.getStudentType() -> studentRepo.updateRow(userIndex, username, userType, classNbr, boolActive)
-                            UserTypes.getTeacherType() -> teacherRepo.updateRow(userIndex, username, userType, classNbr, boolActive)
-                            UserTypes.getHeadmasterType() -> teacherRepo.updateRow(userIndex, username, userType, classNbr, boolActive)
+                            UserTypes.getStudentType() -> studentRepo.updateRow(
+                                userIndex,
+                                username,
+                                userType,
+                                classNbr,
+                                boolActive
+                            )
+
+                            UserTypes.getTeacherType() -> teacherRepo.updateRow(
+                                userIndex,
+                                username,
+                                userType,
+                                classNbr,
+                                boolActive
+                            )
+
+                            UserTypes.getHeadmasterType() -> teacherRepo.updateRow(
+                                userIndex,
+                                username,
+                                userType,
+                                classNbr,
+                                boolActive
+                            )
                         }
                         call.respondRedirect("/admin/editUsers?" + AppConsts.STATUS + AppConsts.EQUALS + "0")
                         return@post
@@ -143,17 +182,64 @@ fun Application.configureRoutingAdmin(studentRepo: StudentRepo,
                     call.respondRedirect("/admin/editUsers?" + AppConsts.STATUS + AppConsts.EQUALS + "someParamIsNull")
                 }
 
+                get("/activateUsers") {
+                    val students = studentRepo.getAll()
+                    val teachers = teacherRepo.getAll()
+                    val params = call.request.queryParameters
+                    if (params.isEmpty())
+                    {
+                        call.respond(
+                            ThymeleafContent(
+                                "admin/activateUsers",
+                                mapOf(AppConsts.STUDENTS to students, AppConsts.TEACHERS to teachers)
+                            )
+                        )
+                        return@get
+                    }
+                    call.respond(
+                        ThymeleafContent(
+                            "admin/activateUsers",
+                            mapOf(
+                                AppConsts.STUDENTS to students,
+                                AppConsts.TEACHERS to teachers,
+                                AppConsts.STATUS to params[AppConsts.STATUS]!!
+                            )
+                        )
+                    )
                 }
 
+                post("/activateUser") {
+                    val post = call.receiveParameters()
+                    val userIndex = post[AppConsts.INDEX]
 
+                    if (userIndex == null) {
+                        call.respondRedirect("/admin/activateUsers?" + AppConsts.STATUS + AppConsts.EQUALS + "indexIsNull")
+                        return@post
+                    }
+
+                    try {
+                        val userType = checkUserType(userIndex, teacherRepo, studentRepo)
+                        val success = when (userType) {
+                            UserTypes.getStudentType() -> studentRepo.toggleActiveByIndex(userIndex)
+                            UserTypes.getTeacherType() -> teacherRepo.toggleActiveByIndex(userIndex)
+                            UserTypes.getHeadmasterType() -> teacherRepo.toggleActiveByIndex(userIndex)
+                            else -> false
+                        }
+                        if (success)
+                        {
+                            call.respondRedirect("/admin/activateUsers?" + AppConsts.STATUS + AppConsts.EQUALS + "success")
+                            return@post
+                        }
+                        call.respondRedirect("/admin/activateUsers?" + AppConsts.STATUS + AppConsts.EQUALS + "changingActiveFailed")
+                        return@post
+                    } catch (e: Exception) {
+                        call.respondRedirect("/admin/activateUsers?" + AppConsts.STATUS + AppConsts.EQUALS + "userNotFound")
+                        return@post
+                    }
                 }
-        authenticate("auth-session") {
-
-            get("/activateUsers") {
-                call.respondText("Activate user")
             }
         }
-            }
-        }
+    }
+}
 
 

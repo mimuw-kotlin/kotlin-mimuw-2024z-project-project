@@ -4,7 +4,6 @@ import com.modules.db.dataModels.StudentModel
 import com.modules.db.tables.StudentsTable
 import com.modules.db.DAO.StudentsDAO
 import com.modules.db.DAO.TeachersDAO
-import com.modules.db.dataModels.TeacherModel
 import com.modules.db.studentDAOToModel
 import com.modules.db.reposInterfaces.SchoolUsersInterface
 import com.modules.db.suspendTransaction
@@ -31,7 +30,7 @@ class StudentRepo : SchoolUsersInterface<StudentModel> {
     }
 
     override suspend fun getAll(): List<StudentModel> = suspendTransaction {
-        StudentsDAO.all().map(::studentDAOToModel)
+        StudentsDAO.all().map(::studentDAOToModel).sortedBy { it.index }
     }
 
     override suspend fun getByIndex(index: String) = suspendTransaction {
@@ -87,4 +86,16 @@ class StudentRepo : SchoolUsersInterface<StudentModel> {
             TransactionManager.current().commit()
         }
 
+    suspend fun toggleActiveByIndex(index: String): Boolean = suspendTransaction {
+        val student = StudentsDAO.find { (StudentsTable.index eq index) }.firstOrNull()
+        if (student == null)
+            return@suspendTransaction false
+
+        StudentsTable.update({ StudentsTable.index eq index }) {
+            it[StudentsTable.active] = !student.active
+        }
+
+        TransactionManager.current().commit()
+        true
+    }
 }
