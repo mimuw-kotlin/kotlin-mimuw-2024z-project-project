@@ -12,14 +12,16 @@ fun studentDAOToModel(dao: StudentsDAO) = StudentModel(
     index = dao.index,
     username = dao.username,
     userType = dao.userType,
-    classNbr = dao.classNbr
+    classNbr = dao.classNbr,
+    active = dao.active
 )
 
 fun teacherDAOToModel(dao: TeachersDAO) = TeacherModel(
     index = dao.index,
     username = dao.username,
     userType = dao.userType,
-    classNbr = dao.classNbr
+    classNbr = dao.classNbr,
+    active = dao.active
 )
 
 fun classDAOToModel(dao: ClassesDAO) = ClassModel(

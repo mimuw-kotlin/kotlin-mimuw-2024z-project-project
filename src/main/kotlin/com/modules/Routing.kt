@@ -81,7 +81,8 @@ fun Application.configureRouting(studentRepo: StudentRepo,
                                         index = generateRandomString(),
                                         username=username,
                                         userType = UserTypes.getType(ConstsDB.STUDENT),
-                                        classNbr = AppConsts.N_A
+                                        classNbr = AppConsts.N_A,
+                                        active = false
                                     )
                     )
                     passwordRepo.setPassword(username, password)
@@ -113,7 +114,8 @@ fun Application.configureRouting(studentRepo: StudentRepo,
                         index = generateRandomString(),
                         username = username,
                         userType = UserTypes.getType(ConstsDB.TEACHER),
-                        classNbr = AppConsts.N_A
+                        classNbr = AppConsts.N_A,
+                        active = false
                     )
                     )
                     passwordRepo.setPassword(username, password)
