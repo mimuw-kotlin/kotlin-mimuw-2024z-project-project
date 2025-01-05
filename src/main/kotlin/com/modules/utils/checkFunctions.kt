@@ -1,5 +1,6 @@
 package com.modules.utils
 
+import com.modules.constants.AppConsts
 import com.modules.db.DAO.ClassesDAO
 import com.modules.db.other.ConstsDB
 import com.modules.db.other.PswdCheckRetVal
@@ -87,11 +88,11 @@ suspend fun checkEditUserParams(
     teacherRepo: TeacherRepo,
     classRepo: ClassRepo
 ): Boolean {
-    val userIndex = post["index"]
-    val userName = post["username"]
-    val classNbr = post["classNbr"]
-    val active = post["active"]
-    val userType = post["userType"]
+    val userIndex = post[AppConsts.INDEX]
+    val userName = post[AppConsts.USERNAME]
+    val classNbr = post[AppConsts.CLASS_NBR]
+    val active = post[AppConsts.ACTIVE]
+    val userType = post[AppConsts.USER_TYPE]
 
     val red = "\u001B[31m"
     val reset = "\u001B[0m"
@@ -104,40 +105,24 @@ suspend fun checkEditUserParams(
     println(red + "userType= ${userType}" + reset)
 
     if (userIndex == null || userName == null || classNbr == null || active == null || userType == null)
-    {
-        println(red + "null in checkEditUserParams" + reset)
         return false
-    }
 
     if (!checkUsername(userName))
-    {
-        println(red + "checkUsername got false" + reset)
         return false
-    }
 
     if (classRepo.getByClassNbr(classNbr) == null)
-    {
-        println(red + "classRepo.getByClassNbr got null" + reset)
         return false
-    }
 
     if (active.lowercase() != "true" && active.lowercase() != "false")
-    {
-        println(red + "active.lowercase() got neither false nor true" + reset)
         return false
-    }
 
     if (!UserTypes.isAllowedType(userType))
-    {
-        println(red + "UserTypes.isAllowedType got false" + reset)
         return false
-    }
 
-    println(red + "checkign if index exists" + reset)
     return !(studentRepo.getByIndex(userIndex) == null && teacherRepo.getByIndex(userIndex) == null)
 }
 
 fun checkUsername(username: String): Boolean {
-    val nameRegex = Regex("^[a-zA-Z0-9]+$")
+    val nameRegex = Regex(AppConsts.USERNAME_REGEX)
     return nameRegex.matches(username)
 }

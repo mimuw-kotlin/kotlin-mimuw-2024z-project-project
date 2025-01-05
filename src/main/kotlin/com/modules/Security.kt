@@ -19,6 +19,7 @@ import io.ktor.server.thymeleaf.ThymeleafContent
 import kotlinx.serialization.Serializable
 
 // Username value can be either username or index - currently only username is supported
+// TODO(In userSession we should store not username but INDEX)
 @Serializable
 data class UserSession(val username: String, val userType: String)
 
@@ -58,18 +59,18 @@ fun Application.configureSecurity(pswdRepo: PasswordRepo,
                         val userType = checkUserType(userName, teacherRepo, studentRepo, adminRepo)
 
                         if (!checkIfActive(userType, userName, studentRepo, teacherRepo))
-                            call.respondRedirect("/loginForm?session=inactive")
+                            call.respondRedirect("/loginForm?" + AppConsts.SESSION + AppConsts.EQUALS + AppConsts.INACTIVE)
 
                         call.sessions.set(UserSession(userName, userType))
                         when (userType) {
-                            UserTypes.getStudentType() -> call.respond(ThymeleafContent("afterLogin/loggedIN", mapOf("username" to userName)))
-                            UserTypes.getTeacherType() -> call.respond(ThymeleafContent("afterLogin/loggedIN", mapOf("username" to userName)))
+                            UserTypes.getStudentType() -> call.respond(ThymeleafContent("afterLogin/loggedIN", mapOf(AppConsts.USERNAME to userName)))
+                            UserTypes.getTeacherType() -> call.respond(ThymeleafContent("afterLogin/loggedIN", mapOf(AppConsts.USERNAME to userName)))
                             UserTypes.getAdminType() -> call.respondRedirect("/admin/controlPanel")
                         }
                     }
                     catch (e: Exception) {
                         println("\u001B[33m Exception: $e \u001B[0m")
-                        call.respondRedirect("/loginForm?session=invalidCred")
+                        call.respondRedirect("/loginForm?"+ AppConsts.SESSION + AppConsts.EQUALS + AppConsts.INVALID_CRED)
                     }
                 }
             }

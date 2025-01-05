@@ -132,7 +132,7 @@ fun Application.configureRouting(studentRepo: StudentRepo,
             get("/home") {
                 val session = call.sessions.get<UserSession>()
                 val username = session!!.username
-                call.respond(ThymeleafContent("afterLogin/homepage", mapOf("username" to username)))
+                call.respond(ThymeleafContent("afterLogin/homepage", mapOf(AppConsts.USERNAME to username)))
             }
         }
     }
