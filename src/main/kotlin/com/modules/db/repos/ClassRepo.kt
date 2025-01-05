@@ -54,7 +54,7 @@ class ClassRepo  {
         }
     }
 
-    suspend fun updateRow(classNbr: String, classTeacherName: String): Unit = suspendTransaction {
+    suspend fun updateRow(classNbr: String, classTeacherName: String?): Unit = suspendTransaction {
         val updatedRow = ClassModel(classNbr, classTeacherName)
         val cls = ClassesDAO.find { (ClassesTable.classNbr eq updatedRow.classNbr) }.firstOrNull()
 

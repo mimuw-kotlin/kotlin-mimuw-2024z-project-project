@@ -8,13 +8,25 @@
 
 <body>
 <h1> Panel główny nauczyciela </h1>
+<h3 th:text="'Witaj: ' + ${teacher.username} + ', your index is: ' + ${teacher.index} "></h3>
+
+<p th:text="'Twój stopień to: ' + ${teacher.userType}"></p>
+
+<p th:text="'Twoja klasa to: ' + ${teacher.classNbr}"></p>
+<form th:action="'/teacher/leaveClass'" method="post">
+    <button type="submit" th:disabled="${teacher.classNbr} == 'N/A'">Opuść klasę</button>
+</form>
+
+<br>
+
 <a href="/logout"> Wyloguj </a>
 
 <br>
 
 <ul>
-    <li> <a href="/teacher/editStudents"> Edytuj uczniów </a> </li>
-    <li> <a href="/teacher/showUsers"> Zobacz użytkowników </a> </li>
+    <li> <a href="/teacher/classes"> Wybierz klasę </a> </li>
+    <li> <a href="/teacher/studentList"> Lista uczniów twojej klasy </a> </li>
+    <li> <a href="/teacher/showTeachers"> Lista innych nauczycieli </a> </li>
 </ul>
 
 <p>---------------------------------------------------</p>

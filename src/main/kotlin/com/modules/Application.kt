@@ -64,7 +64,7 @@ fun Application.module() {
 
         session<UserSession>(AppConsts.TEACHER_SESSION) {
             validate { session: UserSession? ->
-                if (session != null && session.userType != UserTypes.getStudentType())
+                if (session != null && (session.userType == UserTypes.getTeacherType() || session.userType == UserTypes.getHeadmasterType()))
                     return@validate session
                 else
                     return@validate null

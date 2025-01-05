@@ -131,17 +131,22 @@ fun Application.configureRouting(studentRepo: StudentRepo,
         authenticate(AppConsts.BASIC_AUTH_SESSION) {
             get("/home") {
                 val session = call.sessions.get<UserSession>()
-                val username = session!!.username
-                if (session.userType == UserTypes.getStudentType())
-                {
-                    call.respond(ThymeleafContent("student/home", mapOf(AppConsts.USERNAME to username)))
-                    return@get
+                if (session != null) {
+                    if (session.userType == UserTypes.getStudentType()) {
+            //                    val student = studentRepo.getByUsername(username)
+            //                    if (student == null)
+            //                    {
+            //                        call.sessions.clear<UserSession>()
+            //                        call.respond(ThymeleafContent("beforeLogin/loginForm", mapOf(AppConsts.SESSION to AppConsts.INVALID_CRED)))
+            //                        return@get
+            //                    }
+                        call.respondRedirect("/student/home")
+            //                    call.respond(ThymeleafContent("student/home", mapOf(AppConsts.USER to student)))
+            //                    return@get
+                    } else
+                        call.respondRedirect("/teacher/home")
                 }
-                else
-                {
-                    call.respond(ThymeleafContent("teacher/controlPanel", mapOf(AppConsts.USERNAME to username)))
-                    return@get
-                }
+                call.respondRedirect("/loginForm")
             }
         }
     }

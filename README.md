@@ -37,6 +37,5 @@ Dziennik szkolny, będzie aplikacją webową starającą się skorzystać na ost
 - dodanie panelu zarządzanai dla admina, nauczyciela (zmiany klasy ucznia, nazwy klasy, zmian user_type itp, kilka opcji)
 - panel admina gdzie akceptuje nowych użytkowników
 - dodanie możliwości zmiany hasła, nazwy użytkownika
-- identyfikowanie po indexie nie po username
 - dodanie wyświetlania wszystkich uczniów, wszystkich uczniów danej klasy
 - (jeśli zdąże) dodanie możliwości dodawania ocen, przedmiotów, planu 

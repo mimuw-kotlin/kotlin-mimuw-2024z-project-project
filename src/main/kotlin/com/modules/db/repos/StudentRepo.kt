@@ -54,10 +54,13 @@ class StudentRepo : SchoolUsersInterface<StudentModel> {
     override suspend fun addRow(newRow: StudentModel): Unit = suspendTransaction {
 
 //      These checks ensure that the indexes are unique
-        if (StudentsDAO.find { (StudentsTable.index eq newRow.index) }.count() > 0)
+
+        if (StudentsDAO.find {(StudentsTable.index eq newRow.index)}.count() > 0
+            || StudentsDAO.find {(StudentsTable.username eq newRow.username)}.count() > 0)
             return@suspendTransaction
 
-        if (TeachersDAO.find { (TeachersTable.index eq newRow.index) }.count() > 0)
+        if (TeachersDAO.find {(TeachersTable.index eq newRow.index)}.count() > 0
+            || TeachersDAO.find {(TeachersTable.username eq newRow.username)}.count() > 0)
             return@suspendTransaction
 
         StudentsDAO.new {

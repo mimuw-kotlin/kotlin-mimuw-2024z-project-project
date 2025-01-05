@@ -16,7 +16,12 @@ object AppConsts {
     const val DESCRIPTION = "description"
 
     const val STUDENTS = "students"
+    const val STUDENT = "student"
     const val TEACHERS = "teachers"
+    const val TEACHER = "teacher"
+    const val CLASS = "class"
+    const val CLASSES = "classes"
+
     const val STATUS = "status"
     const val USER = "user"
 
