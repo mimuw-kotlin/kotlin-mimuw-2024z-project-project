@@ -6,6 +6,7 @@ import com.modules.db.repos.*
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
+import io.ktor.server.plugins.httpsredirect.*
 import io.ktor.server.response.*
 import io.ktor.server.sessions.*
 import io.ktor.util.*
@@ -22,6 +23,11 @@ fun Application.module() {
     val adminRepo = AdminRepo()
     val classRepo = ClassRepo()
     val subjectRepo = SubjectRepo()
+
+    install(HttpsRedirect) {
+        sslPort = 8443
+        permanentRedirect = true
+    }
 
     install(Sessions) {
         val secretEncryptKey = hex(this@module.environment.config.property("session.secretEncryptKey").getString())

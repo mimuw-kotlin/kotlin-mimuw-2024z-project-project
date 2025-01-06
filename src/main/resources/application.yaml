@@ -4,7 +4,14 @@ ktor:
         modules:
             - com.modules.ApplicationKt.module
     deployment:
+        sslPort: 8443
         port: 8080
+    security:
+      ssl:
+        keyStore: "keystore.jks"
+        keyAlias: "dziennikKey"
+        keyStorePassword: "storePassword"
+        privateKeyPassword: "storePassword"
 
 postgres:
   driverClassName: "org.postgresql.Driver"

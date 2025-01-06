@@ -39,3 +39,8 @@ Dziennik szkolny, będzie aplikacją webową starającą się skorzystać na ost
 - dodanie możliwości zmiany hasła, nazwy użytkownika
 - dodanie wyświetlania wszystkich uczniów, wszystkich uczniów danej klasy
 - (jeśli zdąże) dodanie możliwości dodawania ocen, przedmiotów, planu 
+
+Komenda do generowania ssl key:
+```
+keytool -keystore keystore.jks -alias dziennikKey -genkeypair -keyalg RSA -keysize 4096 -validity 3 -dname 'CN=localhost, OU=ktor, O=ktor, L=Unspecified, ST=Unspecified, C=US'
+```
