@@ -3,14 +3,12 @@ package com.modules
 import com.modules.constants.AppConsts
 import com.modules.db.other.UserTypes
 import com.modules.db.repos.*
-import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
 import io.ktor.server.plugins.httpsredirect.*
 import io.ktor.server.response.*
 import io.ktor.server.sessions.*
 import io.ktor.util.*
-import org.h2.engine.User
 
 fun main(args: Array<String>) {
     io.ktor.server.netty.EngineMain.main(args)

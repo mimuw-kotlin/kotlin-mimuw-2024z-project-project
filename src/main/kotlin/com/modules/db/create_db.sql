@@ -12,6 +12,18 @@ INSERT INTO Classes (class_nbr) VALUES ('2B');
 INSERT INTO Classes (class_nbr) VALUES ('2C');
 INSERT INTO Classes (class_nbr) VALUES ('N/A');
 
+DROP TABLE IF EXISTS Subjects CASCADE;
+CREATE TABLE Subjects (
+                          id SERIAL PRIMARY KEY,
+                          subject_index VARCHAR(20) NOT NULL UNIQUE,
+                          subject_name VARCHAR(70) NOT NULL,
+                          description VARCHAR(555) DEFAULT 'No description available'
+);
+INSERT INTO Subjects (subject_index, subject_name) VALUES ('N/A', 'N/A');
+INSERT INTO Subjects (subject_index, subject_name) VALUES ('MAT', 'Matematyka');
+INSERT INTO Subjects (subject_index, subject_name) VALUES ('ANG', 'Angielski');
+INSERT INTO Subjects (subject_index, subject_name) VALUES ('POL', 'Polski');
+
 DROP TABLE IF EXISTS Students;
 CREATE TABLE Students (
     id SERIAL PRIMARY KEY,
@@ -22,7 +34,6 @@ CREATE TABLE Students (
     active BOOLEAN DEFAULT FALSE,
     FOREIGN KEY (class_nbr) REFERENCES Classes(class_nbr)
 );
-
 
 DROP TABLE IF EXISTS Teachers;
 CREATE TABLE Teachers (
@@ -37,18 +48,6 @@ CREATE TABLE Teachers (
   FOREIGN KEY (class_nbr) REFERENCES Classes(class_nbr),
   FOREIGN KEY (subject_index) REFERENCES Subjects(subject_index)
 );
-
-DROP TABLE IF EXISTS Subjects CASCADE;
-CREATE TABLE Subjects (
-   id SERIAL PRIMARY KEY,
-   subject_index VARCHAR(20) NOT NULL UNIQUE,
-   subject_name VARCHAR(70) NOT NULL,
-   description VARCHAR(555) DEFAULT 'No description available'
-);
-INSERT INTO Subjects (subject_index, subject_name) VALUES ('N/A', 'N/A');
-INSERT INTO Subjects (subject_index, subject_name) VALUES ('MAT', 'Matematyka');
-INSERT INTO Subjects (subject_index, subject_name) VALUES ('ANG', 'Angielski');
-INSERT INTO Subjects (subject_index, subject_name) VALUES ('POL', 'Polski');
 
 DROP TABLE IF EXISTS passwords;
 CREATE TABLE passwords (
