@@ -9,5 +9,5 @@ data class TeacherModel(
     val userType: String,
     val classNbr: String,
     val subjectIndex: String,
-    val active: Boolean
+    val active: Boolean,
 )

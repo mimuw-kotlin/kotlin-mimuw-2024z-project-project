@@ -11,41 +11,57 @@ import org.jetbrains.exposed.sql.transactions.TransactionManager
 import org.jetbrains.exposed.sql.update
 
 class PasswordRepo : PasswordInterface {
-    override suspend fun checkPassword(username: String, password: String): PswdCheckRetVal = suspendTransaction{
+    override suspend fun checkPassword(
+        username: String,
+        password: String,
+    ): PswdCheckRetVal =
+        suspendTransaction {
+            val details =
+                PasswordsDAO
+                    .find { (PasswordsTable.username eq username) }
+                    .map(::passwordDAOToModel)
+                    .firstOrNull()
 
-        val details = PasswordsDAO
-            .find { (PasswordsTable.username eq username) }
-            .map(::passwordDAOToModel)
-            .firstOrNull()
+            if (details == null) {
+                return@suspendTransaction PswdCheckRetVal.USER_NOT_FOUND
+            }
 
-        if (details == null)
-            return@suspendTransaction PswdCheckRetVal.USER_NOT_FOUND
+            val retCheckVal =
+                PasswordUtils.verifyPassword(
+                    passwordFromUserInput = password,
+                    hashedPassword = details.password,
+                )
 
-        val retCheckVal = PasswordUtils.verifyPassword(
-                                                passwordFromUserInput = password,
-                                                hashedPassword = details.password)
+            if (retCheckVal) {
+                return@suspendTransaction PswdCheckRetVal.PASSWORD_CORRECT
+            }
 
-        if (retCheckVal)
-            return@suspendTransaction PswdCheckRetVal.PASSWORD_CORRECT
-
-        return@suspendTransaction PswdCheckRetVal.PASSWORD_INCORRECT
-    }
-
-    override suspend fun setPassword(username: String, password: String) = suspendTransaction{
-        val hashedPasswordWithSalt = PasswordUtils.hashPassword(password)
-        val user = PasswordsDAO.new {
-            this.username = username
-            this.password = hashedPasswordWithSalt.first
+            return@suspendTransaction PswdCheckRetVal.PASSWORD_INCORRECT
         }
+
+    override suspend fun setPassword(
+        username: String,
+        password: String,
+    ) = suspendTransaction {
+        val hashedPasswordWithSalt = PasswordUtils.hashPassword(password)
+        val user =
+            PasswordsDAO.new {
+                this.username = username
+                this.password = hashedPasswordWithSalt.first
+            }
     }
 
-    suspend fun updateUsername(oldUsername: String, newUsername: String) = suspendTransaction{
+    suspend fun updateUsername(
+        oldUsername: String,
+        newUsername: String,
+    ) = suspendTransaction {
         val user = PasswordsDAO.find { PasswordsTable.username eq oldUsername }.firstOrNull()
 
-        if (user == null)
+        if (user == null) {
             return@suspendTransaction
+        }
 
-        PasswordsTable.update ({ PasswordsTable.username eq oldUsername }) {
+        PasswordsTable.update({ PasswordsTable.username eq oldUsername }) {
             it[PasswordsTable.username] = newUsername
         }
 

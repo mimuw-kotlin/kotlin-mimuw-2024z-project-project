@@ -22,20 +22,23 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class UserSession(val username: String, val userType: String)
 
-fun Application.configureSecurity(pswdRepo: PasswordRepo,
-                                  teacherRepo: TeacherRepo,
-                                  studentRepo: StudentRepo,
-                                  adminRepo: AdminRepo) {
+fun Application.configureSecurity(
+    pswdRepo: PasswordRepo,
+    teacherRepo: TeacherRepo,
+    studentRepo: StudentRepo,
+    adminRepo: AdminRepo,
+) {
     authentication {
         form(name = AppConsts.LOGIN_FORM_AUTH) {
             userParamName = AppConsts.USERNAME
             passwordParamName = AppConsts.PASSWORD
 
             validate { credentials ->
-                if (checkPassword(pswdRepo, credentials.name, credentials.password))
+                if (checkPassword(pswdRepo, credentials.name, credentials.password)) {
                     UserIdPrincipal(credentials.name)
-                else
+                } else {
                     null
+                }
             }
 
             challenge {
@@ -46,37 +49,41 @@ fun Application.configureSecurity(pswdRepo: PasswordRepo,
 
     routing {
         authenticate(AppConsts.LOGIN_FORM_AUTH) {
-            post("/login"){
-
+            post("/login") {
                 val existingSession = call.sessions.get<UserSession>()
-                if (existingSession != null)
+                if (existingSession != null) {
                     call.respondRedirect("/home")
-                else
-                {
+                } else {
                     val userName = call.principal<UserIdPrincipal>()?.name.toString()
                     try {
                         val userType = checkUserType(userName, teacherRepo, studentRepo, adminRepo)
 
-                        if (!checkIfActive(userType, userName, studentRepo, teacherRepo))
+                        if (!checkIfActive(userType, userName, studentRepo, teacherRepo)) {
                             call.respondRedirect("/loginForm?" + AppConsts.SESSION + AppConsts.EQUALS + AppConsts.INACTIVE)
+                        }
 
                         call.sessions.set(UserSession(userName, userType))
                         when (userType) {
-                            UserTypes.getStudentType() -> call.respond(ThymeleafContent("afterLogin/loggedIN", mapOf(AppConsts.USERNAME to userName)))
-                            UserTypes.getTeacherType() -> call.respond(ThymeleafContent("afterLogin/loggedIN", mapOf(AppConsts.USERNAME to userName)))
+                            UserTypes.getStudentType() ->
+                                call.respond(
+                                    ThymeleafContent("afterLogin/loggedIN", mapOf(AppConsts.USERNAME to userName)),
+                                )
+                            UserTypes.getTeacherType() ->
+                                call.respond(
+                                    ThymeleafContent("afterLogin/loggedIN", mapOf(AppConsts.USERNAME to userName)),
+                                )
                             UserTypes.getAdminType() -> call.respondRedirect("/admin/controlPanel")
                         }
-                    }
-                    catch (e: Exception) {
+                    } catch (e: Exception) {
                         println("\u001B[33m Exception: $e \u001B[0m")
-                        call.respondRedirect("/loginForm?"+ AppConsts.SESSION + AppConsts.EQUALS + AppConsts.INVALID_CRED)
+                        call.respondRedirect("/loginForm?" + AppConsts.SESSION + AppConsts.EQUALS + AppConsts.INVALID_CRED)
                     }
                 }
             }
         }
 
         authenticate(AppConsts.BASIC_AUTH_SESSION) {
-            get ("/logout") {
+            get("/logout") {
                 call.sessions.clear<UserSession>()
                 call.respondRedirect("/")
             }

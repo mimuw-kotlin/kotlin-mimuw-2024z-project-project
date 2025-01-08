@@ -2,8 +2,6 @@ package com.modules.constants
 
 object AppConsts {
     const val INVALID_CRED = "invalidCred"
-    const val LOGGED_IN = "loggedIN"
-    const val LOGGED_OUT = "loggedOUT"
     const val SESSION = "session"
     const val EMPTY_STRING = ""
     const val SUCCESS = "success"
@@ -25,6 +23,7 @@ object AppConsts {
     const val STATUS = "status"
     const val USER = "user"
 
+    const val USER_SESSION = "user_session"
     const val BASIC_AUTH_SESSION = "basic-auth-session"
     const val ADMIN_SESSION = "admin-session"
     const val TEACHER_SESSION = "teacher-session"

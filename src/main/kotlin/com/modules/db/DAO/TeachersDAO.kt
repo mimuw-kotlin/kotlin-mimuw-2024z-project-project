@@ -5,7 +5,7 @@ import org.jetbrains.exposed.dao.IntEntity
 import org.jetbrains.exposed.dao.IntEntityClass
 import org.jetbrains.exposed.dao.id.EntityID
 
-class TeachersDAO(id: EntityID<Int>) : IntEntity(id){
+class TeachersDAO(id: EntityID<Int>) : IntEntity(id) {
     companion object : IntEntityClass<TeachersDAO>(TeachersTable)
 
     var index by TeachersTable.index

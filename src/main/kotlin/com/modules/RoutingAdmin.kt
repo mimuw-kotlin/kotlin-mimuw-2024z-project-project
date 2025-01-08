@@ -15,12 +15,13 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.ktor.server.thymeleaf.*
 
-fun Application.configureRoutingAdmin(studentRepo: StudentRepo,
-                                    teacherRepo: TeacherRepo,
-                                    passwordRepo: PasswordRepo,
-                                    adminRepo: AdminRepo,
-                                    classRepo: ClassRepo,
-                                    subjectRepo: SubjectRepo
+fun Application.configureRoutingAdmin(
+    studentRepo: StudentRepo,
+    teacherRepo: TeacherRepo,
+    passwordRepo: PasswordRepo,
+    adminRepo: AdminRepo,
+    classRepo: ClassRepo,
+    subjectRepo: SubjectRepo,
 ) {
     routing {
         authenticate(AppConsts.ADMIN_SESSION) {
@@ -35,8 +36,8 @@ fun Application.configureRoutingAdmin(studentRepo: StudentRepo,
                     call.respond(
                         ThymeleafContent(
                             "admin/deleteUsers",
-                            mapOf(AppConsts.STUDENTS to students, AppConsts.TEACHERS to teachers)
-                        )
+                            mapOf(AppConsts.STUDENTS to students, AppConsts.TEACHERS to teachers),
+                        ),
                     )
                 }
 
@@ -62,8 +63,8 @@ fun Application.configureRoutingAdmin(studentRepo: StudentRepo,
                         call.respond(
                             ThymeleafContent(
                                 "admin/editUsers",
-                                mapOf(AppConsts.STUDENTS to students, AppConsts.TEACHERS to teachers)
-                            )
+                                mapOf(AppConsts.STUDENTS to students, AppConsts.TEACHERS to teachers),
+                            ),
                         )
                         return@get
                     }
@@ -74,9 +75,9 @@ fun Application.configureRoutingAdmin(studentRepo: StudentRepo,
                             mapOf(
                                 AppConsts.STUDENTS to students,
                                 AppConsts.TEACHERS to teachers,
-                                AppConsts.STATUS to queryParams[AppConsts.STATUS]!!
-                            )
-                        )
+                                AppConsts.STATUS to queryParams[AppConsts.STATUS]!!,
+                            ),
+                        ),
                     )
                 }
 
@@ -93,9 +94,11 @@ fun Application.configureRoutingAdmin(studentRepo: StudentRepo,
                                 call.respond(
                                     ThymeleafContent(
                                         "admin/editChosenUser",
-                                        mapOf(AppConsts.USER to user,
-                                            AppConsts.CLASSES to allClasses)
-                                    )
+                                        mapOf(
+                                            AppConsts.USER to user,
+                                            AppConsts.CLASSES to allClasses,
+                                        ),
+                                    ),
                                 )
                                 return@get
                             }
@@ -110,9 +113,12 @@ fun Application.configureRoutingAdmin(studentRepo: StudentRepo,
                                 call.respond(
                                     ThymeleafContent(
                                         "admin/editChosenUser",
-                                        mapOf(AppConsts.USER to user, AppConsts.SUBJECTS to allSubjects,
-                                            AppConsts.CLASSES to allClasses)
-                                    )
+                                        mapOf(
+                                            AppConsts.USER to user,
+                                            AppConsts.SUBJECTS to allSubjects,
+                                            AppConsts.CLASSES to allClasses,
+                                        ),
+                                    ),
                                 )
                                 return@get
                             }
@@ -131,18 +137,15 @@ fun Application.configureRoutingAdmin(studentRepo: StudentRepo,
                     val classNbr = post[AppConsts.CLASS_NBR]
                     val active = post[AppConsts.ACTIVE]
 
-                    if (userType == null)
-                    {
+                    if (userType == null) {
                         call.respondRedirect("/admin/editUsers?" + AppConsts.STATUS + AppConsts.EQUALS + "userTypeParamIsNull")
                         return@post
                     }
-                    if (!UserTypes.isAllowedType(userType))
-                    {
+                    if (!UserTypes.isAllowedType(userType)) {
                         call.respondRedirect("/admin/editUsers?" + AppConsts.STATUS + AppConsts.EQUALS + "userTypeNotAllowed")
                         return@post
                     }
-                    if (userIndex == null || username == null || classNbr == null || active == null)
-                    {
+                    if (userIndex == null || username == null || classNbr == null || active == null) {
                         call.respondRedirect("/admin/editUsers?" + AppConsts.STATUS + AppConsts.EQUALS + "someParamIsNull")
                         return@post
                     }
@@ -158,12 +161,13 @@ fun Application.configureRoutingAdmin(studentRepo: StudentRepo,
                         return@post
                     }
 
-                    val oldUsername = when (realUserType) {
-                        UserTypes.getStudentType() -> studentRepo.getByIndex(userIndex)?.username
-                        UserTypes.getTeacherType() -> teacherRepo.getByIndex(userIndex)?.username
-                        UserTypes.getHeadmasterType() -> teacherRepo.getByIndex(userIndex)?.username
-                        else -> null
-                    }
+                    val oldUsername =
+                        when (realUserType) {
+                            UserTypes.getStudentType() -> studentRepo.getByIndex(userIndex)?.username
+                            UserTypes.getTeacherType() -> teacherRepo.getByIndex(userIndex)?.username
+                            UserTypes.getHeadmasterType() -> teacherRepo.getByIndex(userIndex)?.username
+                            else -> null
+                        }
 
 //                      this means that somebody is trying to change index of a user
                     if (oldUsername == null) {
@@ -173,21 +177,21 @@ fun Application.configureRoutingAdmin(studentRepo: StudentRepo,
 
                     val boolActive: Boolean = active.lowercase() == "true"
 
-                    if (userType == UserTypes.getStudentType())
-                    {
-                        if (oldUsername != username)
+                    if (userType == UserTypes.getStudentType()) {
+                        if (oldUsername != username) {
                             passwordRepo.updateUsername(oldUsername, username)
+                        }
 
                         studentRepo.updateRow(
-                                            userIndex,
-                                            username,
-                                            userType,
-                                            classNbr,
-                                            boolActive)
+                            userIndex,
+                            username,
+                            userType,
+                            classNbr,
+                            boolActive,
+                        )
                     }
 //                  teacher or headmaster
-                    else
-                    {
+                    else {
                         val subjectIndex = post[AppConsts.SUBJECT_INDEX]
                         if (subjectIndex == null) {
                             call.respondRedirect("/admin/editUsers?" + AppConsts.STATUS + AppConsts.EQUALS + "subjectIndexIsNull")
@@ -203,15 +207,16 @@ fun Application.configureRoutingAdmin(studentRepo: StudentRepo,
                             return@post
                         }
 
-                        if (oldUsername != username)
+                        if (oldUsername != username) {
                             passwordRepo.updateUsername(oldUsername, username)
+                        }
                         teacherRepo.updateRow(
                             userIndex,
                             username,
                             userType,
                             classNbr,
                             subjectIndex,
-                            boolActive
+                            boolActive,
                         )
                         classRepo.updateRow(classNbr, username)
                     }
@@ -223,13 +228,12 @@ fun Application.configureRoutingAdmin(studentRepo: StudentRepo,
                     val students = studentRepo.getAll()
                     val teachers = teacherRepo.getAll()
                     val params = call.request.queryParameters
-                    if (params.isEmpty())
-                    {
+                    if (params.isEmpty()) {
                         call.respond(
                             ThymeleafContent(
                                 "admin/activateUsers",
-                                mapOf(AppConsts.STUDENTS to students, AppConsts.TEACHERS to teachers)
-                            )
+                                mapOf(AppConsts.STUDENTS to students, AppConsts.TEACHERS to teachers),
+                            ),
                         )
                         return@get
                     }
@@ -239,9 +243,9 @@ fun Application.configureRoutingAdmin(studentRepo: StudentRepo,
                             mapOf(
                                 AppConsts.STUDENTS to students,
                                 AppConsts.TEACHERS to teachers,
-                                AppConsts.STATUS to params[AppConsts.STATUS]!!
-                            )
-                        )
+                                AppConsts.STATUS to params[AppConsts.STATUS]!!,
+                            ),
+                        ),
                     )
                 }
 
@@ -256,14 +260,14 @@ fun Application.configureRoutingAdmin(studentRepo: StudentRepo,
 
                     try {
                         val userType = checkUserType(userIndex, teacherRepo, studentRepo)
-                        val success = when (userType) {
-                            UserTypes.getStudentType() -> studentRepo.toggleActiveByIndex(userIndex)
-                            UserTypes.getTeacherType() -> teacherRepo.toggleActiveByIndex(userIndex)
-                            UserTypes.getHeadmasterType() -> teacherRepo.toggleActiveByIndex(userIndex)
-                            else -> false
-                        }
-                        if (success)
-                        {
+                        val success =
+                            when (userType) {
+                                UserTypes.getStudentType() -> studentRepo.toggleActiveByIndex(userIndex)
+                                UserTypes.getTeacherType() -> teacherRepo.toggleActiveByIndex(userIndex)
+                                UserTypes.getHeadmasterType() -> teacherRepo.toggleActiveByIndex(userIndex)
+                                else -> false
+                            }
+                        if (success) {
                             call.respondRedirect("/admin/activateUsers?" + AppConsts.STATUS + AppConsts.EQUALS + "success")
                             return@post
                         }
@@ -278,13 +282,12 @@ fun Application.configureRoutingAdmin(studentRepo: StudentRepo,
                 get("/subjects") {
                     val subjects = subjectRepo.getAll()
                     val params = call.request.queryParameters
-                    if (params.isEmpty())
-                    {
+                    if (params.isEmpty()) {
                         call.respond(
                             ThymeleafContent(
                                 "admin/subjects",
-                                mapOf(AppConsts.SUBJECTS to subjects)
-                            )
+                                mapOf(AppConsts.SUBJECTS to subjects),
+                            ),
                         )
                         return@get
                     }
@@ -293,9 +296,9 @@ fun Application.configureRoutingAdmin(studentRepo: StudentRepo,
                             "admin/subjects",
                             mapOf(
                                 AppConsts.SUBJECTS to subjects,
-                                AppConsts.STATUS to params[AppConsts.STATUS]!!
-                            )
-                        )
+                                AppConsts.STATUS to params[AppConsts.STATUS]!!,
+                            ),
+                        ),
                     )
                 }
 
@@ -310,14 +313,15 @@ fun Application.configureRoutingAdmin(studentRepo: StudentRepo,
                         return@post
                     }
 
-                    if (!checkAddSubjectParams(post))
-                    {
+                    if (!checkAddSubjectParams(post)) {
                         call.respondRedirect("/admin/subjects?" + AppConsts.STATUS + AppConsts.EQUALS + "oneOrMoreParamsInvalid")
                         return@post
                     }
 
                     if (subjectRepo.getByIndex(subjectIndex) != null) {
-                        call.respondRedirect("/admin/subjects?" + AppConsts.STATUS + AppConsts.EQUALS + "subjectWithGivenIndexAlreadyExists")
+                        call.respondRedirect(
+                            "/admin/subjects?" + AppConsts.STATUS + AppConsts.EQUALS + "subjectWithGivenIndexAlreadyExists",
+                        )
                         return@post
                     }
                     subjectRepo.addRow(SubjectModel(subjectIndex, subjectName, description))
@@ -334,8 +338,8 @@ fun Application.configureRoutingAdmin(studentRepo: StudentRepo,
                             call.respond(
                                 ThymeleafContent(
                                     "admin/editSubject",
-                                    mapOf(AppConsts.SUBJECT to subject)
-                                )
+                                    mapOf(AppConsts.SUBJECT to subject),
+                                ),
                             )
                             return@get
                         }
@@ -356,8 +360,7 @@ fun Application.configureRoutingAdmin(studentRepo: StudentRepo,
                         return@post
                     }
 
-                    if (!checkAddSubjectParams(post))
-                    {
+                    if (!checkAddSubjectParams(post)) {
                         call.respondRedirect("/admin/subjects?" + AppConsts.STATUS + AppConsts.EQUALS + "oneOrMoreParamsInvalidInEdit")
                         return@post
                     }
@@ -370,17 +373,17 @@ fun Application.configureRoutingAdmin(studentRepo: StudentRepo,
                     subjectRepo.updateRow(subjectIndex, subjectName, description)
                     call.respondRedirect("/admin/subjects?" + AppConsts.STATUS + AppConsts.EQUALS + "success")
                     return@post
-
                 }
 
                 post("/deleteSubject") {
                     val post = call.receiveParameters()
                     val subjectIndex = post[AppConsts.INDEX]
                     if (subjectIndex != null) {
-                        if (subjectRepo.removeByIndex(subjectIndex)){
-                            call.respondRedirect("/admin/subjects?" + AppConsts.STATUS + AppConsts.EQUALS + "success")
-                            return@post
-                        }
+                        if (subjectRepo.removeByIndex(subjectIndex))
+                            {
+                                call.respondRedirect("/admin/subjects?" + AppConsts.STATUS + AppConsts.EQUALS + "success")
+                                return@post
+                            }
                         call.respondRedirect("/admin/subjects?" + AppConsts.STATUS + AppConsts.EQUALS + "subjectNotFoundInDelete")
                         return@post
                     }
@@ -391,5 +394,3 @@ fun Application.configureRoutingAdmin(studentRepo: StudentRepo,
         }
     }
 }
-
-

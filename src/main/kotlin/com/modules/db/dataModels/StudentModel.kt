@@ -8,5 +8,5 @@ data class StudentModel(
     val username: String,
     val userType: String,
     val classNbr: String,
-    val active: Boolean
+    val active: Boolean,
 )

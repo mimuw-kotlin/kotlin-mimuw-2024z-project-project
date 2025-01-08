@@ -1,5 +1,6 @@
 package com.modules
 
+import com.modules.constants.AppConsts
 import com.modules.db.dataModels.StudentModel
 import com.modules.db.dataModels.TeacherModel
 import com.modules.db.other.ConstsDB
@@ -16,8 +17,6 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.ktor.server.sessions.*
 import io.ktor.server.thymeleaf.ThymeleafContent
-import com.modules.constants.AppConsts
-
 
 fun generateRandomString(length: Int = 8): String {
     val chars = "0123456789"
@@ -26,19 +25,21 @@ fun generateRandomString(length: Int = 8): String {
         .joinToString("")
 }
 
-suspend fun checkIfLoggedIn(call: ApplicationCall): Unit {
+suspend fun checkIfLoggedIn(call: ApplicationCall) {
     val existingSession = call.sessions.get<UserSession>()
 
-    if (existingSession != null)
+    if (existingSession != null) {
         call.respondRedirect("/home")
+    }
 }
 
-fun Application.configureRouting(studentRepo: StudentRepo,
-                                 teacherRepo: TeacherRepo,
-                                 passwordRepo: PasswordRepo,
-                                 adminRepo: AdminRepo) {
+fun Application.configureRouting(
+    studentRepo: StudentRepo,
+    teacherRepo: TeacherRepo,
+    passwordRepo: PasswordRepo,
+    adminRepo: AdminRepo,
+) {
     routing {
-
         get("/") {
             call.respond(ThymeleafContent("beforeLogin/startPage", mapOf(AppConsts.SESSION to AppConsts.EMPTY_STRING)))
         }
@@ -46,14 +47,13 @@ fun Application.configureRouting(studentRepo: StudentRepo,
         get("/loginForm") {
             checkIfLoggedIn(call)
             val queryParams = call.request.queryParameters
-            if (queryParams.isEmpty())
+            if (queryParams.isEmpty()) {
                 call.respond(ThymeleafContent("beforeLogin/loginForm", mapOf(AppConsts.SESSION to AppConsts.EMPTY_STRING)))
+            }
             call.respond(ThymeleafContent("beforeLogin/loginForm", mapOf(AppConsts.SESSION to queryParams[AppConsts.SESSION]!!)))
-
         }
 
         route("/register") {
-
             get("/student") {
                 checkIfLoggedIn(call)
                 call.respond(ThymeleafContent("beforeLogin/registerStudent", emptyMap()))
@@ -66,22 +66,19 @@ fun Application.configureRouting(studentRepo: StudentRepo,
                 val username = post[AppConsts.USERNAME]
                 val password = post[AppConsts.PASSWORD]
 
-                if (username != null && password != null)
-                {
-                    studentRepo.addRow(StudentModel(
-                                        index = generateRandomString(),
-                                        username=username,
-                                        userType = UserTypes.getType(ConstsDB.STUDENT),
-                                        classNbr = AppConsts.N_A,
-                                        active = false
-                                    )
+                if (username != null && password != null) {
+                    studentRepo.addRow(
+                        StudentModel(
+                            index = generateRandomString(),
+                            username = username,
+                            userType = UserTypes.getStudentType(),
+                            classNbr = AppConsts.N_A,
+                            active = false,
+                        ),
                     )
                     passwordRepo.setPassword(username, password)
                     call.respond(ThymeleafContent("beforeLogin/registerStudent", mapOf(AppConsts.SESSION to AppConsts.SUCCESS)))
-                }
-                else
-                {
-
+                } else {
                     call.respond(ThymeleafContent("beforeLogin/registerStudent", mapOf(AppConsts.SESSION to AppConsts.INVALID_CRED)))
                 }
             }
@@ -98,23 +95,20 @@ fun Application.configureRouting(studentRepo: StudentRepo,
                 val username = post[AppConsts.USERNAME]
                 val password = post[AppConsts.PASSWORD]
 
-                if (username != null && password != null)
-                {
+                if (username != null && password != null) {
                     teacherRepo.addRow(
                         TeacherModel(
-                        index = generateRandomString(),
-                        username = username,
-                        userType = UserTypes.getType(ConstsDB.TEACHER),
-                        classNbr = AppConsts.N_A,
+                            index = generateRandomString(),
+                            username = username,
+                            userType = UserTypes.getTeacherType(),
+                            classNbr = AppConsts.N_A,
                             subjectIndex = AppConsts.N_A,
-                        active = false
-                    )
+                            active = false,
+                        ),
                     )
                     passwordRepo.setPassword(username, password)
                     call.respond(ThymeleafContent("beforeLogin/registerTeacher", mapOf(AppConsts.SESSION to AppConsts.SUCCESS)))
-                }
-                else
-                {
+                } else {
                     call.respond(ThymeleafContent("beforeLogin/registerTeacher", mapOf(AppConsts.SESSION to AppConsts.INVALID_CRED)))
                 }
             }
@@ -127,9 +121,7 @@ fun Application.configureRouting(studentRepo: StudentRepo,
                     if (session.userType == UserTypes.getStudentType()) {
                         call.respondRedirect("/student/home")
                         return@get
-                    }
-                    else
-                    {
+                    } else {
                         call.respondRedirect("/teacher/home")
                         return@get
                     }

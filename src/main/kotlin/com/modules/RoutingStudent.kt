@@ -9,20 +9,19 @@ import io.ktor.server.routing.*
 import io.ktor.server.sessions.*
 import io.ktor.server.thymeleaf.*
 
-fun Application.configureRoutingStudent(studentRepo: StudentRepo,
-                                        teacherRepo: TeacherRepo,
-                                        classRepo: ClassRepo
+fun Application.configureRoutingStudent(
+    studentRepo: StudentRepo,
+    teacherRepo: TeacherRepo,
+    classRepo: ClassRepo,
 ) {
     routing {
         authenticate(AppConsts.STUDENT_SESSION) {
             route("/student") {
-
                 get("/home") {
                     val session = call.sessions.get<UserSession>()
                     val student = studentRepo.getByUsername(session!!.username)
 
-                    if (student == null)
-                    {
+                    if (student == null) {
                         call.sessions.clear<UserSession>()
                         call.respond(ThymeleafContent("beforeLogin/loginForm", mapOf(AppConsts.SESSION to AppConsts.INVALID_CRED)))
                         return@get
@@ -35,8 +34,7 @@ fun Application.configureRoutingStudent(studentRepo: StudentRepo,
                     val session = call.sessions.get<UserSession>()
                     val student = studentRepo.getByUsername(session!!.username)
 
-                    if (student == null)
-                    {
+                    if (student == null) {
                         call.sessions.clear<UserSession>()
                         call.respondRedirect("/")
                         return@get
@@ -45,20 +43,33 @@ fun Application.configureRoutingStudent(studentRepo: StudentRepo,
                     val allStudents = studentRepo.getStudentsFromGivenClass(student.classNbr)
                     val teacher = classRepo.getTeacherFromClass(student.classNbr)
 
-                    if (teacher == null)
-                    {
-                        call.respond(ThymeleafContent("student/showStudents", mapOf(AppConsts.STUDENTS to allStudents,
-                            AppConsts.CLASS_NBR to student.classNbr, AppConsts.TEACHER to AppConsts.N_A)))
+                    if (teacher == null) {
+                        call.respond(
+                            ThymeleafContent(
+                                "student/showStudents",
+                                mapOf(
+                                    AppConsts.STUDENTS to allStudents,
+                                    AppConsts.CLASS_NBR to student.classNbr,
+                                    AppConsts.TEACHER to AppConsts.N_A,
+                                ),
+                            ),
+                        )
                         return@get
                     }
 
-                    call.respond(ThymeleafContent("student/showStudents", mapOf(AppConsts.STUDENTS to allStudents,
-                        AppConsts.CLASS_NBR to student.classNbr, AppConsts.TEACHER to teacher.username)))
+                    call.respond(
+                        ThymeleafContent(
+                            "student/showStudents",
+                            mapOf(
+                                AppConsts.STUDENTS to allStudents,
+                                AppConsts.CLASS_NBR to student.classNbr,
+                                AppConsts.TEACHER to teacher.username,
+                            ),
+                        ),
+                    )
                     return@get
                 }
             }
         }
     }
 }
-
-

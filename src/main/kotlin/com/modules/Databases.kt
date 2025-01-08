@@ -13,17 +13,17 @@ import io.ktor.server.routing.*
 import io.ktor.server.sessions.*
 import io.ktor.util.*
 import io.ktor.websocket.*
+import org.jetbrains.exposed.sql.*
 import java.sql.Connection
 import java.sql.DriverManager
-import org.jetbrains.exposed.sql.*
 
 fun Application.configureDatabases(config: ApplicationConfig) {
-
-    val db = Database.connect(
-        url = config.property("postgres.jdbcURL").getString(),
-        user = config.property("postgres.user").getString(),
-        password = config.property("postgres.password").getString()
-    )
+    val db =
+        Database.connect(
+            url = config.property("postgres.jdbcURL").getString(),
+            user = config.property("postgres.user").getString(),
+            password = config.property("postgres.password").getString(),
+        )
 
     routing {
     }

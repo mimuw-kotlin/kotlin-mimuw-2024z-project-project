@@ -31,7 +31,7 @@ fun Application.module() {
         val secretEncryptKey = hex(this@module.environment.config.property("session.secretEncryptKey").getString())
         val secretSignKey = hex(this@module.environment.config.property("session.secretSignKey").getString())
 
-        cookie<UserSession>("user_session", SessionStorageMemory()) {
+        cookie<UserSession>(AppConsts.USER_SESSION, SessionStorageMemory()) {
             cookie.path = "/"
             cookie.maxAgeInSeconds = 240
             transform(SessionTransportTransformerEncrypt(secretEncryptKey, secretSignKey))
@@ -39,13 +39,13 @@ fun Application.module() {
     }
 
     install(Authentication) {
-
         session<UserSession>(AppConsts.BASIC_AUTH_SESSION) {
             validate { session: UserSession? ->
-                if (session != null)
+                if (session != null) {
                     return@validate session
-                else
+                } else {
                     return@validate null
+                }
             }
 
             challenge {
@@ -55,10 +55,11 @@ fun Application.module() {
 
         session<UserSession>(AppConsts.ADMIN_SESSION) {
             validate { session: UserSession? ->
-                if (session != null && session.userType == UserTypes.getAdminType())
+                if (session != null && session.userType == UserTypes.getAdminType()) {
                     return@validate session
-                else
+                } else {
                     return@validate null
+                }
             }
 
             challenge {
@@ -68,10 +69,11 @@ fun Application.module() {
 
         session<UserSession>(AppConsts.TEACHER_SESSION) {
             validate { session: UserSession? ->
-                if (session != null && (session.userType == UserTypes.getTeacherType() || session.userType == UserTypes.getHeadmasterType()))
+                if (session != null && (session.userType == UserTypes.getTeacherType() || session.userType == UserTypes.getHeadmasterType())) {
                     return@validate session
-                else
+                } else {
                     return@validate null
+                }
             }
 
             challenge {
@@ -81,10 +83,11 @@ fun Application.module() {
 
         session<UserSession>(AppConsts.STUDENT_SESSION) {
             validate { session: UserSession? ->
-                if (session != null && (session.userType == UserTypes.getStudentType() ))
+                if (session != null && (session.userType == UserTypes.getStudentType())) {
                     return@validate session
-                else
+                } else {
                     return@validate null
+                }
             }
 
             challenge {

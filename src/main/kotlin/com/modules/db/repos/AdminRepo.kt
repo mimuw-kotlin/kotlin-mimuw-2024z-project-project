@@ -8,41 +8,41 @@ import com.modules.db.reposInterfaces.AdminInterface
 import com.modules.db.suspendTransaction
 import com.modules.db.tables.AdminTable
 import com.modules.db.tables.PasswordsTable
-import org.jetbrains.exposed.sql.deleteWhere
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
+import org.jetbrains.exposed.sql.deleteWhere
 
 class AdminRepo : AdminInterface {
-
-    override suspend fun getByUsername(username: String): AdminModel? = suspendTransaction{
-        AdminDAO
-            .find { (AdminTable.username eq username) }
-            .map(::adminDAOToModel)
-            .firstOrNull()
-    }
-
-    override suspend fun removeByUsername(username: String) = suspendTransaction {
-        if (username != ConstsDB.SUPER_ADMIN)
-        {
-            val adminDeleted = AdminTable.deleteWhere { AdminTable.username eq username }
-            val pswdDeleted = PasswordsTable.deleteWhere { PasswordsTable.username eq username }
-
-            adminDeleted == 1 && pswdDeleted == 1
+    override suspend fun getByUsername(username: String): AdminModel? =
+        suspendTransaction {
+            AdminDAO
+                .find { (AdminTable.username eq username) }
+                .map(::adminDAOToModel)
+                .firstOrNull()
         }
-        else
-            false
-    }
 
-    override suspend fun addRow(newRow: AdminModel) = suspendTransaction {
-        val isPresent = AdminDAO.find { AdminTable.username eq newRow.username }.firstOrNull()
-        if (isPresent == null)
-        {
-            AdminDAO.new {
-                username = newRow.username
-                userType = newRow.userType
+    override suspend fun removeByUsername(username: String) =
+        suspendTransaction {
+            if (username != ConstsDB.SUPER_ADMIN) {
+                val adminDeleted = AdminTable.deleteWhere { AdminTable.username eq username }
+                val pswdDeleted = PasswordsTable.deleteWhere { PasswordsTable.username eq username }
+
+                adminDeleted == 1 && pswdDeleted == 1
+            } else {
+                false
             }
-            return@suspendTransaction true
         }
-        else
-            return@suspendTransaction false
-    }
+
+    override suspend fun addRow(newRow: AdminModel) =
+        suspendTransaction {
+            val isPresent = AdminDAO.find { AdminTable.username eq newRow.username }.firstOrNull()
+            if (isPresent == null) {
+                AdminDAO.new {
+                    username = newRow.username
+                    userType = newRow.userType
+                }
+                return@suspendTransaction true
+            } else {
+                return@suspendTransaction false
+            }
+        }
 }

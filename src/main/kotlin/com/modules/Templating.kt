@@ -6,10 +6,12 @@ import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver
 
 fun Application.configureTemplating() {
     install(Thymeleaf) {
-        setTemplateResolver(ClassLoaderTemplateResolver().apply {
-            prefix = "templates/thymeleaf/"
-            suffix = ".html"
-            characterEncoding = "utf-8"
-        })
+        setTemplateResolver(
+            ClassLoaderTemplateResolver().apply {
+                prefix = "templates/thymeleaf/"
+                suffix = ".html"
+                characterEncoding = "utf-8"
+            },
+        )
     }
 }

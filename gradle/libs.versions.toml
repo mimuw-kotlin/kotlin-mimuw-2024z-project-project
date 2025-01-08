@@ -1,12 +1,11 @@
-
 [versions]
 exposed-version = "0.56.0"
-h2-version = "2.3.232"
 kotlin-version = "2.1.0"
 ktor-version = "3.0.3"
 logback-version = "1.4.14"
 postgres-version = "42.7.4"
 bcrypt-version = "0.4"
+ktlint-version = "12.1.2"
 
 [libraries]
 ktor-server-core = { module = "io.ktor:ktor-server-core-jvm", version.ref = "ktor-version" }
@@ -33,3 +32,4 @@ ktor-network-tls-certificates = {module = "io.ktor:ktor-network-tls-certificates
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin-version" }
 ktor = { id = "io.ktor.plugin", version.ref = "ktor-version" }
 kotlin-plugin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin-version" }
+ktlint = {id = "org.jlleitschuh.gradle.ktlint", version.ref="ktlint-version"}

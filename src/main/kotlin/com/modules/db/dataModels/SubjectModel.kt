@@ -6,5 +6,5 @@ import kotlinx.serialization.Serializable
 class SubjectModel(
     val index: String,
     val name: String,
-    val description: String
+    val description: String,
 )

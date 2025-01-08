@@ -1,6 +1,6 @@
 package com.modules.db.other
 
-object ConstsDB{
+object ConstsDB {
     const val STUDENT = "student"
     const val STUDENTS = "students"
     const val TEACHER = "teacher"

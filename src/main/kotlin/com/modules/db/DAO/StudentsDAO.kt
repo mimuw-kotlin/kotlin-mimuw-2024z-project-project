@@ -6,7 +6,6 @@ import org.jetbrains.exposed.dao.IntEntityClass
 import org.jetbrains.exposed.dao.id.EntityID
 
 class StudentsDAO(id: EntityID<Int>) : IntEntity(id) {
-
     // IntEntityCls represents a collection of rows in a table with an integer primary key.
     // This class provides methods for querying and managing entities in the database.
     companion object : IntEntityClass<StudentsDAO>(StudentsTable)
