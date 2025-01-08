@@ -67,6 +67,11 @@ fun Application.configureRouting(
                 val password = post[AppConsts.PASSWORD]
 
                 if (username != null && password != null) {
+                    if (username.length < AppConsts.MIN_USERNAME_LEN || password.length < AppConsts.MIN_PASSWORD_LEN) {
+                        call.response.status(HttpStatusCode.BadRequest)
+                        call.respond(ThymeleafContent("beforeLogin/registerStudent", mapOf(AppConsts.SESSION to AppConsts.INVALID_CRED)))
+                        return@post
+                    }
                     studentRepo.addRow(
                         StudentModel(
                             index = generateRandomString(),
@@ -99,6 +104,11 @@ fun Application.configureRouting(
                 val password = post[AppConsts.PASSWORD]
 
                 if (username != null && password != null) {
+                    if (username.length < AppConsts.MIN_USERNAME_LEN || password.length < AppConsts.MIN_PASSWORD_LEN) {
+                        call.response.status(HttpStatusCode.BadRequest)
+                        call.respond(ThymeleafContent("beforeLogin/registerTeacher", mapOf(AppConsts.SESSION to AppConsts.INVALID_CRED)))
+                        return@post
+                    }
                     teacherRepo.addRow(
                         TeacherModel(
                             index = generateRandomString(),

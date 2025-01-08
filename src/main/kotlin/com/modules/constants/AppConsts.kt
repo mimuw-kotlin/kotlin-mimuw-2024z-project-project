@@ -1,6 +1,9 @@
 package com.modules.constants
 
 object AppConsts {
+    const val MIN_PASSWORD_LEN = 2
+    const val MIN_USERNAME_LEN = 2
+
     const val INVALID_CRED = "invalidCred"
     const val SESSION = "session"
     const val EMPTY_STRING = ""
