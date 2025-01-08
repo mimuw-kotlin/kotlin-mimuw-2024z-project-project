@@ -3,9 +3,7 @@ package com.modules
 import com.modules.constants.AppConsts
 import com.modules.db.dataModels.StudentModel
 import com.modules.db.dataModels.TeacherModel
-import com.modules.db.other.ConstsDB
 import com.modules.db.other.UserTypes
-import com.modules.db.repos.AdminRepo
 import com.modules.db.repos.PasswordRepo
 import com.modules.db.repos.StudentRepo
 import com.modules.db.repos.TeacherRepo
@@ -37,7 +35,6 @@ fun Application.configureRouting(
     studentRepo: StudentRepo,
     teacherRepo: TeacherRepo,
     passwordRepo: PasswordRepo,
-    adminRepo: AdminRepo,
 ) {
     routing {
         get("/") {
@@ -49,8 +46,11 @@ fun Application.configureRouting(
             val queryParams = call.request.queryParameters
             if (queryParams.isEmpty()) {
                 call.respond(ThymeleafContent("beforeLogin/loginForm", mapOf(AppConsts.SESSION to AppConsts.EMPTY_STRING)))
+                return@get
             }
+            call.response.status(HttpStatusCode.Unauthorized)
             call.respond(ThymeleafContent("beforeLogin/loginForm", mapOf(AppConsts.SESSION to queryParams[AppConsts.SESSION]!!)))
+            return@get
         }
 
         route("/register") {
@@ -78,8 +78,11 @@ fun Application.configureRouting(
                     )
                     passwordRepo.setPassword(username, password)
                     call.respond(ThymeleafContent("beforeLogin/registerStudent", mapOf(AppConsts.SESSION to AppConsts.SUCCESS)))
+                    return@post
                 } else {
+                    call.response.status(HttpStatusCode.BadRequest)
                     call.respond(ThymeleafContent("beforeLogin/registerStudent", mapOf(AppConsts.SESSION to AppConsts.INVALID_CRED)))
+                    return@post
                 }
             }
 
@@ -108,8 +111,11 @@ fun Application.configureRouting(
                     )
                     passwordRepo.setPassword(username, password)
                     call.respond(ThymeleafContent("beforeLogin/registerTeacher", mapOf(AppConsts.SESSION to AppConsts.SUCCESS)))
+                    return@post
                 } else {
+                    call.response.status(HttpStatusCode.BadRequest)
                     call.respond(ThymeleafContent("beforeLogin/registerTeacher", mapOf(AppConsts.SESSION to AppConsts.INVALID_CRED)))
+                    return@post
                 }
             }
         }
@@ -120,6 +126,9 @@ fun Application.configureRouting(
                 if (session != null) {
                     if (session.userType == UserTypes.getStudentType()) {
                         call.respondRedirect("/student/home")
+                        return@get
+                    } else if (session.userType == UserTypes.getAdminType()) {
+                        call.respondRedirect("/admin/controlPanel")
                         return@get
                     } else {
                         call.respondRedirect("/teacher/home")

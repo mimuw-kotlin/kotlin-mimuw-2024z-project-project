@@ -2,6 +2,7 @@ package com.modules
 
 import com.modules.constants.AppConsts
 import com.modules.db.repos.*
+import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
 import io.ktor.server.request.*
@@ -13,7 +14,6 @@ import io.ktor.server.thymeleaf.*
 fun Application.configureRoutingTeacher(
     studentRepo: StudentRepo,
     teacherRepo: TeacherRepo,
-    passwordRepo: PasswordRepo,
     classRepo: ClassRepo,
 ) {
     routing {
@@ -25,6 +25,7 @@ fun Application.configureRoutingTeacher(
 
                     if (teacher == null) {
                         call.sessions.clear<UserSession>()
+                        call.response.status(HttpStatusCode.Unauthorized)
                         call.respond(ThymeleafContent("beforeLogin/loginForm", mapOf(AppConsts.SESSION to AppConsts.INVALID_CRED)))
                         return@get
                     }
@@ -39,7 +40,9 @@ fun Application.configureRoutingTeacher(
                         call.respond(ThymeleafContent("teacher/classes", mapOf(AppConsts.CLASSES to allClasses)))
                         return@get
                     }
-
+                    if (params[AppConsts.STATUS] != AppConsts.SUCCESS) {
+                        call.response.status(HttpStatusCode.BadRequest)
+                    }
                     call.respond(
                         ThymeleafContent(
                             "teacher/classes",
@@ -56,6 +59,7 @@ fun Application.configureRoutingTeacher(
 
                     if (teacher == null || classNbr == null) {
                         call.sessions.clear<UserSession>()
+                        call.response.status(HttpStatusCode.BadRequest)
                         call.respond(ThymeleafContent("beforeLogin/loginForm", mapOf(AppConsts.SESSION to AppConsts.INVALID_CRED)))
                         return@post
                     }
@@ -95,6 +99,7 @@ fun Application.configureRoutingTeacher(
 
                     if (teacher == null) {
                         call.sessions.clear<UserSession>()
+                        call.response.status(HttpStatusCode.BadRequest)
                         call.respond(ThymeleafContent("beforeLogin/loginForm", mapOf(AppConsts.SESSION to AppConsts.INVALID_CRED)))
                         return@post
                     }
@@ -129,6 +134,7 @@ fun Application.configureRoutingTeacher(
 
                     if (teacher == null) {
                         call.sessions.clear<UserSession>()
+                        call.response.status(HttpStatusCode.Unauthorized)
                         call.respondRedirect("/")
                         return@get
                     }

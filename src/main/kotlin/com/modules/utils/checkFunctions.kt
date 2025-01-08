@@ -1,7 +1,6 @@
 package com.modules.utils
 
 import com.modules.constants.AppConsts
-import com.modules.db.other.ConstsDB
 import com.modules.db.other.PswdCheckRetVal
 import com.modules.db.other.UserTypes
 import com.modules.db.repos.*

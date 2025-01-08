@@ -9,6 +9,7 @@ import com.modules.db.repos.TeacherRepo
 import com.modules.utils.checkIfActive
 import com.modules.utils.checkPassword
 import com.modules.utils.checkUserType
+import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
 import io.ktor.server.response.*
@@ -42,6 +43,7 @@ fun Application.configureSecurity(
             }
 
             challenge {
+                call.response.status(HttpStatusCode.Unauthorized)
                 call.respondRedirect("/loginForm?session=invalidCred")
             }
         }
@@ -53,29 +55,40 @@ fun Application.configureSecurity(
                 val existingSession = call.sessions.get<UserSession>()
                 if (existingSession != null) {
                     call.respondRedirect("/home")
+                    return@post
                 } else {
                     val userName = call.principal<UserIdPrincipal>()?.name.toString()
                     try {
                         val userType = checkUserType(userName, teacherRepo, studentRepo, adminRepo)
 
                         if (!checkIfActive(userType, userName, studentRepo, teacherRepo)) {
+                            call.response.status(HttpStatusCode.Forbidden)
                             call.respondRedirect("/loginForm?" + AppConsts.SESSION + AppConsts.EQUALS + AppConsts.INACTIVE)
+                            return@post
                         }
 
                         call.sessions.set(UserSession(userName, userType))
                         when (userType) {
-                            UserTypes.getStudentType() ->
+                            UserTypes.getStudentType() -> {
                                 call.respond(
                                     ThymeleafContent("afterLogin/loggedIN", mapOf(AppConsts.USERNAME to userName)),
                                 )
-                            UserTypes.getTeacherType() ->
+                                return@post
+                            }
+                            UserTypes.getTeacherType() -> {
                                 call.respond(
                                     ThymeleafContent("afterLogin/loggedIN", mapOf(AppConsts.USERNAME to userName)),
                                 )
-                            UserTypes.getAdminType() -> call.respondRedirect("/admin/controlPanel")
+                                return@post
+                            }
+                            UserTypes.getAdminType() -> {
+                                call.respondRedirect("/admin/controlPanel")
+                                return@post
+                            }
                         }
                     } catch (e: Exception) {
                         println("\u001B[33m Exception: $e \u001B[0m")
+                        call.response.status(HttpStatusCode.BadRequest)
                         call.respondRedirect("/loginForm?" + AppConsts.SESSION + AppConsts.EQUALS + AppConsts.INVALID_CRED)
                     }
                 }

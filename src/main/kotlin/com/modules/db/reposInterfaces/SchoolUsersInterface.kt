@@ -1,7 +1,6 @@
 package com.modules.db.reposInterfaces
 
-interface SchoolUsersInterface<ModelT>  {
-
+interface SchoolUsersInterface<ModelT> {
     suspend fun getAll(): List<ModelT>
 
     suspend fun getByIndex(index: String): ModelT?

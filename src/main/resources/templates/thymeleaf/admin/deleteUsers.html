@@ -29,6 +29,8 @@
 
 <h1>Usuń Uczniów</h1>
 
+<p th:if="${status} != null" th:text="${status}" style="color: darkred"></p>
+
 <button onclick=toggleTable("studentsTable")>Pokaż/Ukryj</button>
 
 <br>

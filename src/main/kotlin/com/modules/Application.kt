@@ -99,8 +99,8 @@ fun Application.module() {
     configureDatabases(environment.config)
     configureTemplating()
     configureSecurity(passwordRepo, teacherRepo, studentRepo, adminRepo)
-    configureRouting(studentRepo, teacherRepo, passwordRepo, adminRepo)
-    configureRoutingAdmin(studentRepo, teacherRepo, passwordRepo, adminRepo, classRepo, subjectRepo)
-    configureRoutingTeacher(studentRepo, teacherRepo, passwordRepo, classRepo)
+    configureRouting(studentRepo, teacherRepo, passwordRepo)
+    configureRoutingAdmin(studentRepo, teacherRepo, passwordRepo, classRepo, subjectRepo)
+    configureRoutingTeacher(studentRepo, teacherRepo, classRepo)
     configureRoutingStudent(studentRepo, teacherRepo, classRepo)
 }

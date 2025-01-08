@@ -26,9 +26,9 @@
 
 <a href="/admin/controlPanel">Powrót</a>
 
-<p th:if="${status} != '' and ${status} != '0'" style="color: darkred"  th:text="${status}"></p>
+<p th:if="${status} != '' and ${status} != 'success'" style="color: darkred"  th:text="${status}"></p>
 
-<p th:if="${status} == '0'" style="color: darkgreen">Zmiany zostały zapisane!</p>
+<p th:if="${status} == 'success'" style="color: darkgreen">Zmiany zostały zapisane!</p>
 
 <h1>Edytuj Uczniów</h1>
 

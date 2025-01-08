@@ -15,7 +15,6 @@ import org.jetbrains.exposed.sql.transactions.TransactionManager
 import org.jetbrains.exposed.sql.update
 
 class TeacherRepo : SchoolUsersInterface<TeacherModel> {
-
     override suspend fun getByClassNbr(clsNbr: String): List<TeacherModel> =
         suspendTransaction {
             TeachersDAO
