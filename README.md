@@ -4,6 +4,25 @@
 ## Authors
 - Krzysztof Lembryk
 
+## Jak uruchomić Dockera
+W folderze w którym mamy plik Dockerfile wpisujemy:
+- ./gradlew buildFatJar
+- docker-compose build
+- docker-compose run  -p 8080:8080 -p 8443:8443 web (musimy zrobić run bo compose up nie expose'uje portów)
+- docker-compose down (kiedy chcemy zatrzymać i usunąć kontenery)
+
+Uwaga - plik keystore.jks nie powinien być w repo, a powinno się
+go tworzyć samemu poprzez użycie komendy
+```
+keytool -keystore keystore.jks -alias dziennikKey -genkeypair -keyalg RSA -keysize 4096 -validity 3 -dname 'CN=localhost, OU=ktor, O=ktor, L=Unspecified, ST=Unspecified, C=US'
+```
+Jednakże w celu ułatwienia procesu ten plik już jest w repo i jest on kopiowany do kontenera.
+Również application.yaml nie powinno być w repo bo mamy tam hasła, klucze prywatne itp.
+
+<span style="color:red">UWAGA</span> -
+W bazie danych defaultowo jest już jeden użytkownik: **superAdmin**
+Jego hasło to: **admin**
+
 ## Description
 Dziennik szkolny, będzie aplikacją webową starającą się skorzystać na ostatniej fali niepopularności dziennika internetowego VULCAN.
 
