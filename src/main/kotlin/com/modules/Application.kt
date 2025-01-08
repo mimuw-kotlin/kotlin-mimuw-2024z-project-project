@@ -93,10 +93,8 @@ fun Application.module() {
         }
     }
 
-    configureSockets()
     configureDatabases(environment.config)
     configureTemplating()
-    configureHTTP()
     configureSecurity(passwordRepo, teacherRepo, studentRepo, adminRepo)
     configureRouting(studentRepo, teacherRepo, passwordRepo, adminRepo)
     configureRoutingAdmin(studentRepo, teacherRepo, passwordRepo, adminRepo, classRepo, subjectRepo)

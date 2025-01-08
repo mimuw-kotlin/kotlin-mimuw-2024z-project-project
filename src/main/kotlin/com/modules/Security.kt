@@ -1,7 +1,6 @@
 package com.modules
 
 import com.modules.constants.AppConsts
-import com.modules.db.other.PswdCheckRetVal
 import com.modules.db.other.UserTypes
 import com.modules.db.repos.AdminRepo
 import com.modules.db.repos.PasswordRepo
