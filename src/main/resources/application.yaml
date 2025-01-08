@@ -15,7 +15,7 @@ ktor:
 
 postgres:
   driverClassName: "org.postgresql.Driver"
-  jdbcURL: "jdbc:postgresql://127.0.0.1:5432/postgres"
+  jdbcURL: "jdbc:postgresql://db:5432/postgres"
   user: "postgres"
   password: "password"
 

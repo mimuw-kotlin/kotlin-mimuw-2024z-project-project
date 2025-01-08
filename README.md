@@ -23,6 +23,9 @@ Również application.yaml nie powinno być w repo bo mamy tam hasła, klucze pr
 W bazie danych defaultowo jest już jeden użytkownik: **superAdmin**
 Jego hasło to: **admin**
 
+Jeśli po zalogowaniu występuje błąd odnoszący się do bazy danych to należy usunąć cały folder tmp, usunąć powstałe 
+kontenery z dockera i zbudować wszystko od nowa, powinno wtedy zadziałać.
+
 ## Description
 Dziennik szkolny, będzie aplikacją webową starającą się skorzystać na ostatniej fali niepopularności dziennika internetowego VULCAN.
 
