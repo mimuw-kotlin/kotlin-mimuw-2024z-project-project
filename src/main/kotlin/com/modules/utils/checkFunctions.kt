@@ -1,13 +1,18 @@
 package com.modules.utils
 
 import com.modules.constants.AppConsts
+import com.modules.db.dataModels.StudentModel
+import com.modules.db.dataModels.TeacherModel
 import com.modules.db.other.PswdCheckRetVal
 import com.modules.db.other.UserTypes
 import com.modules.db.repos.*
+import com.modules.db.reposInterfaces.AdminInterface
+import com.modules.db.reposInterfaces.PasswordInterface
+import com.modules.db.reposInterfaces.SchoolUsersInterface
 import io.ktor.http.Parameters
 
 suspend fun checkPassword(
-    pswdRepo: PasswordRepo,
+    pswdRepo: PasswordInterface,
     username: String,
     password: String,
 ): Boolean {
@@ -21,9 +26,9 @@ suspend fun checkPassword(
 
 suspend fun checkUserType(
     username: String,
-    teacherRepo: TeacherRepo,
-    studentRepo: StudentRepo,
-    adminRepo: AdminRepo,
+    teacherRepo: SchoolUsersInterface<TeacherModel>,
+    studentRepo: SchoolUsersInterface<StudentModel>,
+    adminRepo: AdminInterface,
 ): String {
     // We make three queries to the db, which is not optimal
     // we should make a join query instead, but current impl of repos
@@ -48,8 +53,8 @@ suspend fun checkUserType(
 
 suspend fun checkUserType(
     index: String,
-    teacherRepo: TeacherRepo,
-    studentRepo: StudentRepo,
+    teacherRepo: SchoolUsersInterface<TeacherModel>,
+    studentRepo: SchoolUsersInterface<StudentModel>,
 ): String {
     // We make three queries to the db, which is not optimal
     // we should make a join query instead, but current impl of repos
@@ -70,8 +75,8 @@ suspend fun checkUserType(
 suspend fun checkIfActive(
     userType: String,
     username: String,
-    studentRepo: StudentRepo,
-    teacherRepo: TeacherRepo,
+    studentRepo: SchoolUsersInterface<StudentModel>,
+    teacherRepo: SchoolUsersInterface<TeacherModel>,
 ): Boolean {
     if (userType == UserTypes.getStudentType()) {
         val student = studentRepo.getByUsername(username)
@@ -91,8 +96,8 @@ suspend fun checkIfActive(
 
 suspend fun checkEditUserParams(
     post: Parameters,
-    studentRepo: StudentRepo,
-    teacherRepo: TeacherRepo,
+    studentRepo: SchoolUsersInterface<StudentModel>,
+    teacherRepo: SchoolUsersInterface<TeacherModel>,
     classRepo: ClassRepo,
 ): Boolean {
     val userIndex = post[AppConsts.INDEX]

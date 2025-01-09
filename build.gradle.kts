@@ -41,4 +41,5 @@ dependencies {
     implementation(libs.ktor.network.tls.certificates)
     testImplementation(libs.ktor.server.test.host)
     testImplementation(libs.kotlin.test.junit)
+    testImplementation(libs.jetbrains.kotlin.test)
 }

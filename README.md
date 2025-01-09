@@ -9,8 +9,12 @@ W folderze w którym mamy plik Dockerfile wpisujemy:
 - ./gradlew buildFatJar
 - docker-compose build
 - docker-compose run  -p 8080:8080 -p 8443:8443 web (musimy zrobić run bo compose up nie expose'uje portów)
+- *(Czasem run może nie zadziałać ze względu na używany już przez kogoś port 8080, wtedy albo czekamy albo sprawdzamy czy w dockerze nie ma już kontenera z tym portem i go usuwamy)*
 - docker-compose down (kiedy chcemy zatrzymać i usunąć kontenery)
-
+<br>
+  <span style="color: green;"> (ALBO można użyć skryptu ./docker_rebuild_script.sh do wykonania powyższych kroków) </span>
+<br>
+<br>
 Uwaga - plik keystore.jks nie powinien być w repo, a powinno się
 go tworzyć samemu poprzez użycie komendy
 ```
@@ -61,13 +65,3 @@ Dziennik szkolny, będzie aplikacją webową starającą się skorzystać na ost
 - dodanie możliwości zmiany hasła, nazwy użytkownika
 - dodanie wyświetlania wszystkich uczniów, wszystkich uczniów danej klasy
 - (jeśli zdąże) dodanie możliwości dodawania ocen, przedmiotów, planu 
-
-Komenda do generowania ssl key:
-```
-keytool -keystore keystore.jks -alias dziennikKey -genkeypair -keyalg RSA -keysize 4096 -validity 3 -dname 'CN=localhost, OU=ktor, O=ktor, L=Unspecified, ST=Unspecified, C=US'
-```
-
-Budowanie fatJaru dla projektu:
-```
-./gradlew buildFatJar
-```

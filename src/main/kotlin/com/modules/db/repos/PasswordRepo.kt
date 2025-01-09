@@ -51,7 +51,7 @@ class PasswordRepo : PasswordInterface {
             }
     }
 
-    suspend fun updateUsername(
+    override suspend fun updateUsername(
         oldUsername: String,
         newUsername: String,
     ) = suspendTransaction {

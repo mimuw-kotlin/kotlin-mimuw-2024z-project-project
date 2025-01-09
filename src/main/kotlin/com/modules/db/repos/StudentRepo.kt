@@ -15,20 +15,6 @@ import org.jetbrains.exposed.sql.transactions.TransactionManager
 import org.jetbrains.exposed.sql.update
 
 class StudentRepo : SchoolUsersInterface<StudentModel> {
-    override suspend fun getByClassNbr(clsNbr: String): List<StudentModel> =
-        suspendTransaction {
-            StudentsDAO
-                .find { (StudentsTable.classNbr eq clsNbr) }
-                .map(::studentDAOToModel)
-        }
-
-    override suspend fun getByUsername(username: String): StudentModel? =
-        suspendTransaction {
-            StudentsDAO
-                .find { (StudentsTable.username eq username) }
-                .map(::studentDAOToModel)
-                .firstOrNull()
-        }
 
     override suspend fun getAll(): List<StudentModel> =
         suspendTransaction {
@@ -80,11 +66,27 @@ class StudentRepo : SchoolUsersInterface<StudentModel> {
             }
         }
 
-    suspend fun updateRow(
+    override suspend fun getByClassNbr(clsNbr: String): List<StudentModel> =
+        suspendTransaction {
+            StudentsDAO
+                .find { (StudentsTable.classNbr eq clsNbr) }
+                .map(::studentDAOToModel).sortedBy { it.username }
+        }
+
+    override suspend fun getByUsername(username: String): StudentModel? =
+        suspendTransaction {
+            StudentsDAO
+                .find { (StudentsTable.username eq username) }
+                .map(::studentDAOToModel)
+                .firstOrNull()
+        }
+
+    override suspend fun updateRow(
         index: String,
         username: String,
         userType: String,
         classNbr: String,
+        subjectIndex: String,
         active: Boolean,
     ): Unit =
         suspendTransaction {
@@ -106,7 +108,7 @@ class StudentRepo : SchoolUsersInterface<StudentModel> {
             TransactionManager.current().commit()
         }
 
-    suspend fun toggleActiveByIndex(index: String): Boolean =
+    override suspend fun toggleActiveByIndex(index: String): Boolean =
         suspendTransaction {
             val student = StudentsDAO.find { (StudentsTable.index eq index) }.firstOrNull()
             if (student == null) {
@@ -119,10 +121,5 @@ class StudentRepo : SchoolUsersInterface<StudentModel> {
 
             TransactionManager.current().commit()
             true
-        }
-
-    suspend fun getStudentsFromGivenClass(classNbr: String): List<StudentModel> =
-        suspendTransaction {
-            StudentsDAO.find { StudentsTable.classNbr eq classNbr }.map(::studentDAOToModel).sortedBy { it.username }
         }
 }

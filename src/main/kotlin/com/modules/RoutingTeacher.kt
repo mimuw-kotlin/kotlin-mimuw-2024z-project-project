@@ -139,7 +139,7 @@ fun Application.configureRoutingTeacher(
                         return@get
                     }
 
-                    val allStudents = studentRepo.getStudentsFromGivenClass(teacher.classNbr)
+                    val allStudents = studentRepo.getByClassNbr(teacher.classNbr)
                     call.respond(
                         ThymeleafContent(
                             "teacher/showStudents",

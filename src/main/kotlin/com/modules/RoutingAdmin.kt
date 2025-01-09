@@ -217,6 +217,7 @@ fun Application.configureRoutingAdmin(
                             username,
                             userType,
                             classNbr,
+                            AppConsts.NO_SUBJECT_INDEX,
                             boolActive,
                         )
                     }

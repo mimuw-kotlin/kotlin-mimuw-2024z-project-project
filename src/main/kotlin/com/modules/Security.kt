@@ -1,11 +1,16 @@
 package com.modules
 
 import com.modules.constants.AppConsts
+import com.modules.db.dataModels.StudentModel
+import com.modules.db.dataModels.TeacherModel
 import com.modules.db.other.UserTypes
 import com.modules.db.repos.AdminRepo
 import com.modules.db.repos.PasswordRepo
 import com.modules.db.repos.StudentRepo
 import com.modules.db.repos.TeacherRepo
+import com.modules.db.reposInterfaces.AdminInterface
+import com.modules.db.reposInterfaces.PasswordInterface
+import com.modules.db.reposInterfaces.SchoolUsersInterface
 import com.modules.utils.checkIfActive
 import com.modules.utils.checkPassword
 import com.modules.utils.checkUserType
@@ -24,10 +29,10 @@ import kotlinx.serialization.Serializable
 data class UserSession(val username: String, val userType: String)
 
 fun Application.configureSecurity(
-    pswdRepo: PasswordRepo,
-    teacherRepo: TeacherRepo,
-    studentRepo: StudentRepo,
-    adminRepo: AdminRepo,
+    pswdRepo: PasswordInterface,
+    teacherRepo: SchoolUsersInterface<TeacherModel>,
+    studentRepo: SchoolUsersInterface<StudentModel>,
+    adminRepo: AdminInterface,
 ) {
     authentication {
         form(name = AppConsts.LOGIN_FORM_AUTH) {

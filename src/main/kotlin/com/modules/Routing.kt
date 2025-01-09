@@ -7,6 +7,8 @@ import com.modules.db.other.UserTypes
 import com.modules.db.repos.PasswordRepo
 import com.modules.db.repos.StudentRepo
 import com.modules.db.repos.TeacherRepo
+import com.modules.db.reposInterfaces.PasswordInterface
+import com.modules.db.reposInterfaces.SchoolUsersInterface
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
@@ -32,12 +34,13 @@ suspend fun checkIfLoggedIn(call: ApplicationCall) {
 }
 
 fun Application.configureRouting(
-    studentRepo: StudentRepo,
-    teacherRepo: TeacherRepo,
-    passwordRepo: PasswordRepo,
+    studentRepo: SchoolUsersInterface<StudentModel>,
+    teacherRepo: SchoolUsersInterface<TeacherModel>,
+    passwordRepo: PasswordInterface,
 ) {
     routing {
         get("/") {
+            call.response.status(HttpStatusCode.OK)
             call.respond(ThymeleafContent("beforeLogin/startPage", mapOf(AppConsts.SESSION to AppConsts.EMPTY_STRING)))
         }
 
@@ -45,6 +48,7 @@ fun Application.configureRouting(
             checkIfLoggedIn(call)
             val queryParams = call.request.queryParameters
             if (queryParams.isEmpty()) {
+                call.response.status(HttpStatusCode.OK)
                 call.respond(ThymeleafContent("beforeLogin/loginForm", mapOf(AppConsts.SESSION to AppConsts.EMPTY_STRING)))
                 return@get
             }

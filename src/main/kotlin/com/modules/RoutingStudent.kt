@@ -40,7 +40,7 @@ fun Application.configureRoutingStudent(
                         return@get
                     }
 
-                    val allStudents = studentRepo.getStudentsFromGivenClass(student.classNbr)
+                    val allStudents = studentRepo.getByClassNbr(student.classNbr)
                     val teacher = classRepo.getTeacherFromClass(student.classNbr)
 
                     if (teacher == null) {

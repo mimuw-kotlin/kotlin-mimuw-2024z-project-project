@@ -11,6 +11,7 @@ object AppConsts {
     const val PASSWORD = "password"
     const val N_A = "N/A"
     const val INACTIVE = "inactive"
+    const val NO_SUBJECT_INDEX = "noSubjectIndex"
 
     const val SUBJECT = "subject"
     const val NAME = "name"

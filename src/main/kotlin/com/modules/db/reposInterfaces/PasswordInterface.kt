@@ -11,4 +11,9 @@ interface PasswordInterface {
         username: String,
         password: String,
     )
+
+    suspend fun updateUsername(
+        oldUsername: String,
+        newUsername: String,
+    )
 }

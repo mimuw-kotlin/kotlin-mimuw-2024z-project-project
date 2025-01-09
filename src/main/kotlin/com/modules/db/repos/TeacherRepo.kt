@@ -4,6 +4,7 @@ import com.modules.db.DAO.StudentsDAO
 import com.modules.db.DAO.TeachersDAO
 import com.modules.db.dataModels.TeacherModel
 import com.modules.db.reposInterfaces.SchoolUsersInterface
+import com.modules.db.studentDAOToModel
 import com.modules.db.suspendTransaction
 import com.modules.db.tables.PasswordsTable
 import com.modules.db.tables.StudentsTable
@@ -15,20 +16,6 @@ import org.jetbrains.exposed.sql.transactions.TransactionManager
 import org.jetbrains.exposed.sql.update
 
 class TeacherRepo : SchoolUsersInterface<TeacherModel> {
-    override suspend fun getByClassNbr(clsNbr: String): List<TeacherModel> =
-        suspendTransaction {
-            TeachersDAO
-                .find { (TeachersTable.classNbr eq clsNbr) }
-                .map(::teacherDAOToModel)
-        }
-
-    override suspend fun getByUsername(username: String): TeacherModel? =
-        suspendTransaction {
-            TeachersDAO
-                .find { (TeachersTable.username eq username) }
-                .map(::teacherDAOToModel)
-                .firstOrNull()
-        }
 
     override suspend fun getAll(): List<TeacherModel> =
         suspendTransaction {
@@ -82,7 +69,22 @@ class TeacherRepo : SchoolUsersInterface<TeacherModel> {
             }
         }
 
-    suspend fun updateRow(
+    override suspend fun getByClassNbr(clsNbr: String): List<TeacherModel> =
+        suspendTransaction {
+            TeachersDAO
+                .find { (TeachersTable.classNbr eq clsNbr) }
+                .map(::teacherDAOToModel).sortedBy { it.username }
+        }
+
+    override suspend fun getByUsername(username: String): TeacherModel? =
+        suspendTransaction {
+            TeachersDAO
+                .find { (TeachersTable.username eq username) }
+                .map(::teacherDAOToModel)
+                .firstOrNull()
+        }
+
+    override suspend fun updateRow(
         index: String,
         username: String,
         userType: String,
@@ -109,7 +111,7 @@ class TeacherRepo : SchoolUsersInterface<TeacherModel> {
             TransactionManager.current().commit()
         }
 
-    suspend fun toggleActiveByIndex(index: String): Boolean =
+    override suspend fun toggleActiveByIndex(index: String): Boolean =
         suspendTransaction {
             val teacher = TeachersDAO.find { (TeachersTable.index eq index) }.firstOrNull()
 
