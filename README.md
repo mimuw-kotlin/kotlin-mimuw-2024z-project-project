@@ -14,8 +14,10 @@ W folderze w którym mamy plik Dockerfile wpisujemy:
 <br>
   <span style="color: green;"> (ALBO można użyć skryptu ./docker_rebuild_script.sh do wykonania powyższych kroków) </span>
 <br>
+- Uwaga - adres wyświetlany w konsoli to 0.0.0.0 ale jest to adres naszej aplikacji wewnątrz dockera,
+aby wejść na stronę z naszego komputera trzeba użyć **localhost** albo **127.0.0.1**
 <br>
-Uwaga - plik keystore.jks nie powinien być w repo, a powinno się
+- Uwaga - plik keystore.jks nie powinien być w repo, a powinno się
 go tworzyć samemu poprzez użycie komendy
 ```
 keytool -keystore keystore.jks -alias dziennikKey -genkeypair -keyalg RSA -keysize 4096 -validity 3 -dname 'CN=localhost, OU=ktor, O=ktor, L=Unspecified, ST=Unspecified, C=US'

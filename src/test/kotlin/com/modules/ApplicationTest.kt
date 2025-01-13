@@ -57,6 +57,7 @@ import kotlin.test.*
                     }
                 }
             }
+            configureTemplating()
             configureSecurity(passwordRepo, teacherRepo, studentRepo, adminRepo)
             configureRouting(studentRepo, teacherRepo, passwordRepo)
         }
