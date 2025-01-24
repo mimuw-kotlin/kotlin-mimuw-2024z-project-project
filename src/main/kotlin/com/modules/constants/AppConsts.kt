@@ -1,6 +1,8 @@
 package com.modules.constants
 
 object AppConsts {
+    const val SESSION_LENGTH: Long = 60
+
     const val MIN_PASSWORD_LEN = 2
     const val MIN_USERNAME_LEN = 2
 

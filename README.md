@@ -35,6 +35,9 @@ kontenery z dockera i zbudować wszystko od nowa, powinno wtedy zadziałać.
 
 Żeby uruchomić projekt lokalnie trzeba w pliku application.yaml w postgres w jdbcURL zmienić **db** na **localhost**
 
+
+Długość sesji to 60 sekund, ale można to zmienić modyfikując stałą SESSION_LENGTH w pliku AppConsts
+
 ## Description
 Dziennik szkolny, będzie aplikacją webową starającą się skorzystać na ostatniej fali niepopularności dziennika internetowego VULCAN.
 

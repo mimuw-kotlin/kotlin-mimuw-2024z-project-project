@@ -33,7 +33,7 @@ fun Application.module() {
 
         cookie<UserSession>(AppConsts.USER_SESSION, SessionStorageMemory()) {
             cookie.path = "/"
-            cookie.maxAgeInSeconds = 240
+            cookie.maxAgeInSeconds = AppConsts.SESSION_LENGTH
             transform(SessionTransportTransformerEncrypt(secretEncryptKey, secretSignKey))
         }
     }
