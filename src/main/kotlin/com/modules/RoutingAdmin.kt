@@ -223,7 +223,7 @@ fun Application.configureRoutingAdmin(
                                 boolActive,
                             )
                         }
-//                  teacher or headmaster
+                        // teacher or headmaster
                         else {
                             val subjectIndex = post[AppConsts.SUBJECT_INDEX]
                             if (subjectIndex == null) {

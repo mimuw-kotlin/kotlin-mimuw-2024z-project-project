@@ -88,6 +88,11 @@ suspend fun checkIfActive(
         if (teacher != null) {
             return teacher.active
         }
+    } else if (userType == UserTypes.getHeadmasterType()) {
+        val teacher = teacherRepo.getByUsername(username)
+        if (teacher != null) {
+            return teacher.active
+        }
     } else if (userType == UserTypes.getAdminType()) {
         return true
     }
