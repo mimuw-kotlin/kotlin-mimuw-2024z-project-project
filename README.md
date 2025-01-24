@@ -80,9 +80,12 @@ Dziennik szkolny, będzie aplikacją webową starającą się skorzystać na ost
 - dodanie szyfrowania cookies sesyjnych
 - dodanie Dockera
 - dodanie kilku testów
+- dodanie ktlint formatera
+- dodanie dosyć dużo routów
+- nie zmieniłem identyfikacji z username na index, ale dodałem check że username'y muszą być unikalne
 - panel zarządzania dla admina - modyfikowanie użytkowników, aktywowanie użytkowników (czyli akceptowanie nowych użytkowników), 
 usuwanie uzytkownikow, przydzielanie do klas, dodawanie przedmiotow
 - Zmiana nazwy użytkownika poprzez panel admina
 - możliwość wyświetlenia wszystkich użytkowników (admin), wszystkich nauczycieli i uczniów twojej klasy (nauczyciel),
 wszystkich uczniów z twojej klasy i wychowawce (uczeń)
-- Nauczyciele mogą przypisać się do danej klasy, przypisać sobie dany pzredmiot
+- Nauczyciele mogą przypisać się do danej klasy, admin może przypisać dany pzredmiot do nauczyciela
