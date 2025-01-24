@@ -185,72 +185,88 @@ fun Application.configureRoutingAdmin(
                         return@post
                     }
 
-                    val realUserType = checkUserType(userIndex, teacherRepo, studentRepo)
-                    if (realUserType == UserTypes.getStudentType() && userType != realUserType) {
-                        call.respondRedirect("/admin/editUsers?" + AppConsts.STATUS + AppConsts.EQUALS + "studentTypeMismatch")
-                        return@post
-                    }
-
-                    val oldUsername =
-                        when (realUserType) {
-                            UserTypes.getStudentType() -> studentRepo.getByIndex(userIndex)?.username
-                            UserTypes.getTeacherType() -> teacherRepo.getByIndex(userIndex)?.username
-                            UserTypes.getHeadmasterType() -> teacherRepo.getByIndex(userIndex)?.username
-                            else -> null
+                    try
+                    {
+                        val realUserType = checkUserType(userIndex, teacherRepo, studentRepo)
+                        if (realUserType == UserTypes.getStudentType() && userType != realUserType) {
+                            call.respondRedirect("/admin/editUsers?" + AppConsts.STATUS + AppConsts.EQUALS + "studentTypeMismatch")
+                            return@post
                         }
+
+                        val oldUsername =
+                            when (realUserType) {
+                                UserTypes.getStudentType() -> studentRepo.getByIndex(userIndex)?.username
+                                UserTypes.getTeacherType() -> teacherRepo.getByIndex(userIndex)?.username
+                                UserTypes.getHeadmasterType() -> teacherRepo.getByIndex(userIndex)?.username
+                                else -> null
+                            }
 
 //                      this means that somebody is trying to change index of a user
-                    if (oldUsername == null) {
-                        call.respondRedirect("/admin/editUsers?" + AppConsts.STATUS + AppConsts.EQUALS + "noUserWithGivenIndex")
+                        if (oldUsername == null) {
+                            call.respondRedirect("/admin/editUsers?" + AppConsts.STATUS + AppConsts.EQUALS + "noUserWithGivenIndex")
+                            return@post
+                        }
+
+                        val boolActive: Boolean = active.lowercase() == "true"
+
+                        if (userType == UserTypes.getStudentType()) {
+                            if (oldUsername != username) {
+                                passwordRepo.updateUsername(oldUsername, username)
+                            }
+
+                            studentRepo.updateRow(
+                                userIndex,
+                                username,
+                                userType,
+                                classNbr,
+                                AppConsts.NO_SUBJECT_INDEX,
+                                boolActive,
+                            )
+                        }
+//                  teacher or headmaster
+                        else {
+                            val subjectIndex = post[AppConsts.SUBJECT_INDEX]
+                            if (subjectIndex == null) {
+                                call.respondRedirect("/admin/editUsers?" + AppConsts.STATUS + AppConsts.EQUALS + "subjectIndexIsNull")
+                                return@post
+                            }
+                            if (!checkSubjectIndex(subjectIndex, subjectRepo)) {
+                                call.respondRedirect("/admin/editUsers?" + AppConsts.STATUS + AppConsts.EQUALS + "subjectIndexNotFound")
+                                return@post
+                            }
+
+                            val teacherOfCls = classRepo.getTeacherFromClass(classNbr)
+                            // if teacherOfCls is null it means class is free to take, if not we check if classNbr
+                            // we want to take is not N/A, and then if it's not we check if this class is not ours
+                            if (teacherOfCls != null && classNbr != AppConsts.N_A && teacherOfCls.index != userIndex) {
+                                call.respondRedirect("/admin/editUsers?" + AppConsts.STATUS + AppConsts.EQUALS + "classAlreadyHasTeacher")
+                                return@post
+                            }
+
+                            if (oldUsername != username) {
+                                passwordRepo.updateUsername(oldUsername, username)
+                            }
+
+                            val prevClsNbr = teacherRepo.getByIndex(userIndex)?.classNbr
+                            if (prevClsNbr != null) {
+                                classRepo.updateRow(prevClsNbr, null)
+                            }
+                            classRepo.updateRow(classNbr, username)
+                            teacherRepo.updateRow(
+                                userIndex,
+                                username,
+                                userType,
+                                classNbr,
+                                subjectIndex,
+                                boolActive,
+                            )
+                        }
+                    }
+                    catch (e: Exception) {
+                        call.respondRedirect("/admin/editUsers?" + AppConsts.STATUS + AppConsts.EQUALS + "userNotFound")
                         return@post
                     }
 
-                    val boolActive: Boolean = active.lowercase() == "true"
-
-                    if (userType == UserTypes.getStudentType()) {
-                        if (oldUsername != username) {
-                            passwordRepo.updateUsername(oldUsername, username)
-                        }
-
-                        studentRepo.updateRow(
-                            userIndex,
-                            username,
-                            userType,
-                            classNbr,
-                            AppConsts.NO_SUBJECT_INDEX,
-                            boolActive,
-                        )
-                    }
-//                  teacher or headmaster
-                    else {
-                        val subjectIndex = post[AppConsts.SUBJECT_INDEX]
-                        if (subjectIndex == null) {
-                            call.respondRedirect("/admin/editUsers?" + AppConsts.STATUS + AppConsts.EQUALS + "subjectIndexIsNull")
-                            return@post
-                        }
-                        if (!checkSubjectIndex(subjectIndex, subjectRepo)) {
-                            call.respondRedirect("/admin/editUsers?" + AppConsts.STATUS + AppConsts.EQUALS + "subjectIndexNotFound")
-                            return@post
-                        }
-
-                        if (classRepo.getTeacherFromClass(classNbr) != null) {
-                            call.respondRedirect("/admin/editUsers?" + AppConsts.STATUS + AppConsts.EQUALS + "classAlreadyHasTeacher")
-                            return@post
-                        }
-
-                        if (oldUsername != username) {
-                            passwordRepo.updateUsername(oldUsername, username)
-                        }
-                        teacherRepo.updateRow(
-                            userIndex,
-                            username,
-                            userType,
-                            classNbr,
-                            subjectIndex,
-                            boolActive,
-                        )
-                        classRepo.updateRow(classNbr, username)
-                    }
                     call.respondRedirect("/admin/editUsers?" + AppConsts.STATUS + AppConsts.EQUALS + "success")
                     return@post
                 }

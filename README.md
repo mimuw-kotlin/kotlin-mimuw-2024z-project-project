@@ -67,3 +67,16 @@ Dziennik szkolny, będzie aplikacją webową starającą się skorzystać na ost
 - dodanie możliwości zmiany hasła, nazwy użytkownika
 - dodanie wyświetlania wszystkich uczniów, wszystkich uczniów danej klasy
 - (jeśli zdąże) dodanie możliwości dodawania ocen, przedmiotów, planu 
+
+## Co ostatecznie udało się zrobić
+- UI w thymeleaf z bootstrapem
+- dodanie SSL i przekierowania wszystkich żądań http na https
+- dodanie szyfrowania cookies sesyjnych
+- dodanie Dockera
+- dodanie kilku testów
+- panel zarządzania dla admina - modyfikowanie użytkowników, aktywowanie użytkowników (czyli akceptowanie nowych użytkowników), 
+usuwanie uzytkownikow, przydzielanie do klas, dodawanie przedmiotow
+- Zmiana nazwy użytkownika poprzez panel admina
+- możliwość wyświetlenia wszystkich użytkowników (admin), wszystkich nauczycieli i uczniów twojej klasy (nauczyciel),
+wszystkich uczniów z twojej klasy i wychowawce (uczeń)
+- Nauczyciele mogą przypisać się do danej klasy, przypisać sobie dany pzredmiot
