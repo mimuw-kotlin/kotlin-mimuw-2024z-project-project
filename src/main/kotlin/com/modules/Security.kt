@@ -88,6 +88,14 @@ fun Application.configureSecurity(
                                 )
                                 return@post
                             }
+
+                            UserTypes.getHeadmasterType() -> {
+                                call.response.status(HttpStatusCode.OK)
+                                call.respond(
+                                    ThymeleafContent("afterLogin/loggedIN", mapOf(AppConsts.USERNAME to userName)),
+                                )
+                                return@post
+                            }
                             UserTypes.getAdminType() -> {
                                 call.response.status(HttpStatusCode.OK)
                                 call.respondRedirect("/admin/controlPanel")

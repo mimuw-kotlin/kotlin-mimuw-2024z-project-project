@@ -32,6 +32,9 @@ Jego hasło to: **admin**
 Jeśli po zalogowaniu występuje błąd odnoszący się do bazy danych to należy usunąć cały folder tmp, usunąć powstałe 
 kontenery z dockera i zbudować wszystko od nowa, powinno wtedy zadziałać.
 
+
+Żeby uruchomić projekt lokalnie trzeba w pliku application.yaml w postgres w jdbcURL zmienić **db** na **localhost**
+
 ## Description
 Dziennik szkolny, będzie aplikacją webową starającą się skorzystać na ostatniej fali niepopularności dziennika internetowego VULCAN.
 
