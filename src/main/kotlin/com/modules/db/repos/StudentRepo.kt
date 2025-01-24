@@ -42,20 +42,20 @@ class StudentRepo : SchoolUsersInterface<StudentModel> {
             rowsDeleted == 1 && pswdDeleted == 1
         }
 
-    override suspend fun addRow(newRow: StudentModel): Unit =
+    override suspend fun addRow(newRow: StudentModel) =
         suspendTransaction {
 //      These checks ensure that the indexes are unique
 
             if (StudentsDAO.find { (StudentsTable.index eq newRow.index) }.count() > 0 ||
                 StudentsDAO.find { (StudentsTable.username eq newRow.username) }.count() > 0
             ) {
-                return@suspendTransaction
+                return@suspendTransaction false
             }
 
             if (TeachersDAO.find { (TeachersTable.index eq newRow.index) }.count() > 0 ||
                 TeachersDAO.find { (TeachersTable.username eq newRow.username) }.count() > 0
             ) {
-                return@suspendTransaction
+                return@suspendTransaction false
             }
 
             StudentsDAO.new {
@@ -64,6 +64,8 @@ class StudentRepo : SchoolUsersInterface<StudentModel> {
                 userType = newRow.userType
                 classNbr = newRow.classNbr
             }
+
+            return@suspendTransaction true
         }
 
     override suspend fun getByClassNbr(clsNbr: String): List<StudentModel> =

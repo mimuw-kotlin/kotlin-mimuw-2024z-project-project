@@ -76,15 +76,21 @@ fun Application.configureRouting(
                         call.respond(ThymeleafContent("beforeLogin/registerStudent", mapOf(AppConsts.SESSION to AppConsts.INVALID_CRED)))
                         return@post
                     }
-                    studentRepo.addRow(
-                        StudentModel(
-                            index = generateRandomString(),
-                            username = username,
-                            userType = UserTypes.getStudentType(),
-                            classNbr = AppConsts.N_A,
-                            active = false,
-                        ),
-                    )
+                    if (!studentRepo.addRow(
+                            StudentModel(
+                                index = generateRandomString(),
+                                username = username,
+                                userType = UserTypes.getStudentType(),
+                                classNbr = AppConsts.N_A,
+                                active = false,
+                            )
+                        )
+                        )
+                    {
+                        call.response.status(HttpStatusCode.BadRequest)
+                        call.respond(ThymeleafContent("beforeLogin/registerStudent", mapOf(AppConsts.SESSION to AppConsts.INVALID_CRED)))
+                        return@post
+                    }
                     passwordRepo.setPassword(username, password)
                     call.respond(ThymeleafContent("beforeLogin/registerStudent", mapOf(AppConsts.SESSION to AppConsts.SUCCESS)))
                     return@post
@@ -113,7 +119,7 @@ fun Application.configureRouting(
                         call.respond(ThymeleafContent("beforeLogin/registerTeacher", mapOf(AppConsts.SESSION to AppConsts.INVALID_CRED)))
                         return@post
                     }
-                    teacherRepo.addRow(
+                    if (!teacherRepo.addRow(
                         TeacherModel(
                             index = generateRandomString(),
                             username = username,
@@ -123,6 +129,12 @@ fun Application.configureRouting(
                             active = false,
                         ),
                     )
+                    )
+                    {
+                        call.response.status(HttpStatusCode.BadRequest)
+                        call.respond(ThymeleafContent("beforeLogin/registerTeacher", mapOf(AppConsts.SESSION to AppConsts.INVALID_CRED)))
+                        return@post
+                    }
                     passwordRepo.setPassword(username, password)
                     call.respond(ThymeleafContent("beforeLogin/registerTeacher", mapOf(AppConsts.SESSION to AppConsts.SUCCESS)))
                     return@post

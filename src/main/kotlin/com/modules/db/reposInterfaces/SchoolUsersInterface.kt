@@ -9,7 +9,7 @@ interface SchoolUsersInterface<ModelT> {
 
     suspend fun removeByIndex(index: String): Boolean
 
-    suspend fun addRow(newRow: ModelT) : Unit
+    suspend fun addRow(newRow: ModelT) : Boolean
 
     suspend fun getByClassNbr(clsNbr: String): List<ModelT>
 
