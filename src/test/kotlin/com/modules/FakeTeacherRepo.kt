@@ -6,7 +6,7 @@ import com.modules.db.reposInterfaces.SchoolUsersInterface
 class FakeTeacherRepo : SchoolUsersInterface<TeacherModel> {
 
     private val teachers = mutableMapOf(
-        "teacher" to TeacherModel("21372137", "teacher", "teacher", "1E", "N/A", true),
+        "teacher" to TeacherModel("21372137", "teacher", "teacher", "1E", "N/A", false),
     )
 
     override suspend fun getAll(): List<TeacherModel> {

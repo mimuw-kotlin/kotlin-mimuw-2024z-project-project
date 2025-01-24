@@ -75,18 +75,21 @@ fun Application.configureSecurity(
                         call.sessions.set(UserSession(userName, userType))
                         when (userType) {
                             UserTypes.getStudentType() -> {
+                                call.response.status(HttpStatusCode.OK)
                                 call.respond(
                                     ThymeleafContent("afterLogin/loggedIN", mapOf(AppConsts.USERNAME to userName)),
                                 )
                                 return@post
                             }
                             UserTypes.getTeacherType() -> {
+                                call.response.status(HttpStatusCode.OK)
                                 call.respond(
                                     ThymeleafContent("afterLogin/loggedIN", mapOf(AppConsts.USERNAME to userName)),
                                 )
                                 return@post
                             }
                             UserTypes.getAdminType() -> {
+                                call.response.status(HttpStatusCode.OK)
                                 call.respondRedirect("/admin/controlPanel")
                                 return@post
                             }
