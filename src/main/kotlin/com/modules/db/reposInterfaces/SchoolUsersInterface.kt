@@ -1,7 +1,5 @@
 package com.modules.db.reposInterfaces
 
-import com.modules.db.dataModels.StudentModel
-
 interface SchoolUsersInterface<ModelT> {
     suspend fun getAll(): List<ModelT>
 
@@ -9,7 +7,7 @@ interface SchoolUsersInterface<ModelT> {
 
     suspend fun removeByIndex(index: String): Boolean
 
-    suspend fun addRow(newRow: ModelT) : Boolean
+    suspend fun addRow(newRow: ModelT): Boolean
 
     suspend fun getByClassNbr(clsNbr: String): List<ModelT>
 
@@ -21,8 +19,8 @@ interface SchoolUsersInterface<ModelT> {
         userType: String,
         classNbr: String,
         subjectIndex: String,
-        active: Boolean,) : Unit
+        active: Boolean,
+    ): Unit
 
-   suspend fun toggleActiveByIndex(index: String): Boolean
-
+    suspend fun toggleActiveByIndex(index: String): Boolean
 }

@@ -1,6 +1,6 @@
 package com.modules.db
 
-import com.modules.db.DAO.*
+import com.modules.db.dao.*
 import com.modules.db.dataModels.*
 
 fun adminDAOToModel(dao: AdminDAO) =

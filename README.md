@@ -80,7 +80,8 @@ Dziennik szkolny, będzie aplikacją webową starającą się skorzystać na ost
 - dodanie szyfrowania cookies sesyjnych
 - dodanie Dockera
 - dodanie kilku testów
-- dodanie ktlint formatera
+- dodanie ktlint formatera (który rzuca błędami odnośnie wildcard imports, które w intellj są 
+defaultowym sposobem importowania i nie udało mi się zmienić konfiguracji ktlinta żeby to ignorował)
 - dodanie dosyć dużo routów
 - nie zmieniłem identyfikacji z username na index, ale dodałem check że username'y muszą być unikalne
 - panel zarządzania dla admina - modyfikowanie użytkowników, aktywowanie użytkowników (czyli akceptowanie nowych użytkowników), 

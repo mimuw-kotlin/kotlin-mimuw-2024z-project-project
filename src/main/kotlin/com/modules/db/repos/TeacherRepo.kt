@@ -1,10 +1,9 @@
 package com.modules.db.repos
 
-import com.modules.db.DAO.StudentsDAO
-import com.modules.db.DAO.TeachersDAO
+import com.modules.db.dao.StudentsDAO
+import com.modules.db.dao.TeachersDAO
 import com.modules.db.dataModels.TeacherModel
 import com.modules.db.reposInterfaces.SchoolUsersInterface
-import com.modules.db.studentDAOToModel
 import com.modules.db.suspendTransaction
 import com.modules.db.tables.PasswordsTable
 import com.modules.db.tables.StudentsTable
@@ -16,7 +15,6 @@ import org.jetbrains.exposed.sql.transactions.TransactionManager
 import org.jetbrains.exposed.sql.update
 
 class TeacherRepo : SchoolUsersInterface<TeacherModel> {
-
     override suspend fun getAll(): List<TeacherModel> =
         suspendTransaction {
             TeachersDAO.all().map(::teacherDAOToModel).sortedBy { it.index }

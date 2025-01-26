@@ -1,7 +1,7 @@
 package com.modules.db.repos
 
-import com.modules.db.DAO.SubjectsDAO
-import com.modules.db.DAO.TeachersDAO
+import com.modules.db.dao.SubjectsDAO
+import com.modules.db.dao.TeachersDAO
 import com.modules.db.dataModels.SubjectModel
 import com.modules.db.other.ConstsDB
 import com.modules.db.subjectDAOToModel

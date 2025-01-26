@@ -4,9 +4,6 @@ import com.modules.constants.AppConsts
 import com.modules.db.dataModels.StudentModel
 import com.modules.db.dataModels.TeacherModel
 import com.modules.db.other.UserTypes
-import com.modules.db.repos.PasswordRepo
-import com.modules.db.repos.StudentRepo
-import com.modules.db.repos.TeacherRepo
 import com.modules.db.reposInterfaces.PasswordInterface
 import com.modules.db.reposInterfaces.SchoolUsersInterface
 import io.ktor.http.*
@@ -83,10 +80,9 @@ fun Application.configureRouting(
                                 userType = UserTypes.getStudentType(),
                                 classNbr = AppConsts.N_A,
                                 active = false,
-                            )
+                            ),
                         )
-                        )
-                    {
+                    ) {
                         call.response.status(HttpStatusCode.BadRequest)
                         call.respond(ThymeleafContent("beforeLogin/registerStudent", mapOf(AppConsts.SESSION to AppConsts.INVALID_CRED)))
                         return@post
@@ -120,17 +116,16 @@ fun Application.configureRouting(
                         return@post
                     }
                     if (!teacherRepo.addRow(
-                        TeacherModel(
-                            index = generateRandomString(),
-                            username = username,
-                            userType = UserTypes.getTeacherType(),
-                            classNbr = AppConsts.N_A,
-                            subjectIndex = AppConsts.N_A,
-                            active = false,
-                        ),
-                    )
-                    )
-                    {
+                            TeacherModel(
+                                index = generateRandomString(),
+                                username = username,
+                                userType = UserTypes.getTeacherType(),
+                                classNbr = AppConsts.N_A,
+                                subjectIndex = AppConsts.N_A,
+                                active = false,
+                            ),
+                        )
+                    ) {
                         call.response.status(HttpStatusCode.BadRequest)
                         call.respond(ThymeleafContent("beforeLogin/registerTeacher", mapOf(AppConsts.SESSION to AppConsts.INVALID_CRED)))
                         return@post

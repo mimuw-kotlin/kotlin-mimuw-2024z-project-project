@@ -4,22 +4,25 @@ import com.modules.db.dataModels.StudentModel
 import com.modules.db.reposInterfaces.SchoolUsersInterface
 
 class FakeStudentRepo : SchoolUsersInterface<StudentModel> {
-
-    private val students = mutableMapOf(
-        "student1" to StudentModel(
-            "12345678",
-            "student1",
-            "student",
-            "1E",
-            true),
-
-        "student2" to StudentModel(
-            "12345679",
-            "student2",
-            "student",
-            "1E",
-            false),
-    )
+    private val students =
+        mutableMapOf(
+            "student1" to
+                StudentModel(
+                    "12345678",
+                    "student1",
+                    "student",
+                    "1E",
+                    true,
+                ),
+            "student2" to
+                StudentModel(
+                    "12345679",
+                    "student2",
+                    "student",
+                    "1E",
+                    false,
+                ),
+        )
 
     override suspend fun getAll(): List<StudentModel> {
         return students.values.toList()
@@ -39,7 +42,7 @@ class FakeStudentRepo : SchoolUsersInterface<StudentModel> {
         }
     }
 
-    override suspend fun addRow(newRow: StudentModel) : Unit {
+    override suspend fun addRow(newRow: StudentModel) {
         if (students[newRow.username] == null) {
             students[newRow.username] = newRow
         }
@@ -49,7 +52,7 @@ class FakeStudentRepo : SchoolUsersInterface<StudentModel> {
         return students.values.filter { it.classNbr == clsNbr }
     }
 
-    override suspend fun getByUsername(username: String) : StudentModel?{
+    override suspend fun getByUsername(username: String): StudentModel? {
         return students[username]
     }
 
@@ -59,7 +62,8 @@ class FakeStudentRepo : SchoolUsersInterface<StudentModel> {
         userType: String,
         classNbr: String,
         subjectIndex: String,
-        active: Boolean,) : Unit {
+        active: Boolean,
+    ) {
         val student = students.values.find { it.index == index }
         if (student != null) {
             students[student.username] = StudentModel(index, username, userType, classNbr, active)

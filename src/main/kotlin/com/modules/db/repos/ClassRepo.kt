@@ -1,8 +1,8 @@
 package com.modules.db.repos
 
-import com.modules.db.DAO.ClassesDAO
-import com.modules.db.DAO.TeachersDAO
 import com.modules.db.classDAOToModel
+import com.modules.db.dao.ClassesDAO
+import com.modules.db.dao.TeachersDAO
 import com.modules.db.dataModels.ClassModel
 import com.modules.db.dataModels.TeacherModel
 import com.modules.db.suspendTransaction

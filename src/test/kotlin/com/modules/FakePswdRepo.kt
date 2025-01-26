@@ -3,13 +3,14 @@ package com.modules
 import com.modules.db.other.PswdCheckRetVal
 import com.modules.db.reposInterfaces.PasswordInterface
 
-class FakePswdRepo : PasswordInterface{
-    private val passwords = mutableMapOf(
-        "admin" to "admin",
-        "teacher" to "teacher",
-        "student1" to "student1",
-        "student2" to "student2",
-    )
+class FakePswdRepo : PasswordInterface {
+    private val passwords =
+        mutableMapOf(
+            "admin" to "admin",
+            "teacher" to "teacher",
+            "student1" to "student1",
+            "student2" to "student2",
+        )
 
     override suspend fun checkPassword(
         username: String,

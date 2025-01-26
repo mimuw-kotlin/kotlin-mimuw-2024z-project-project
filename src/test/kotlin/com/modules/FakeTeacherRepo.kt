@@ -4,10 +4,10 @@ import com.modules.db.dataModels.TeacherModel
 import com.modules.db.reposInterfaces.SchoolUsersInterface
 
 class FakeTeacherRepo : SchoolUsersInterface<TeacherModel> {
-
-    private val teachers = mutableMapOf(
-        "teacher" to TeacherModel("21372137", "teacher", "teacher", "1E", "N/A", false),
-    )
+    private val teachers =
+        mutableMapOf(
+            "teacher" to TeacherModel("21372137", "teacher", "teacher", "1E", "N/A", false),
+        )
 
     override suspend fun getAll(): List<TeacherModel> {
         return teachers.values.toList()
@@ -27,7 +27,7 @@ class FakeTeacherRepo : SchoolUsersInterface<TeacherModel> {
         }
     }
 
-    override suspend fun addRow(newRow: TeacherModel) : Unit {
+    override suspend fun addRow(newRow: TeacherModel) {
         if (teachers[newRow.username] == null) {
             teachers[newRow.username] = newRow
         }
@@ -37,7 +37,7 @@ class FakeTeacherRepo : SchoolUsersInterface<TeacherModel> {
         return teachers.values.filter { it.classNbr == clsNbr }
     }
 
-    override suspend fun getByUsername(username: String) : TeacherModel?{
+    override suspend fun getByUsername(username: String): TeacherModel? {
         return teachers[username]
     }
 
@@ -47,7 +47,8 @@ class FakeTeacherRepo : SchoolUsersInterface<TeacherModel> {
         userType: String,
         classNbr: String,
         subjectIndex: String,
-        active: Boolean,) : Unit {
+        active: Boolean,
+    ) {
         val teacher = teachers.values.find { it.index == index }
         if (teacher != null) {
             teachers[teacher.username] = TeacherModel(index, username, userType, classNbr, subjectIndex, active)

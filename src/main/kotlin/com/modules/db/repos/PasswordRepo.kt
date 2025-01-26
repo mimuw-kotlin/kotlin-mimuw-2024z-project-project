@@ -1,6 +1,6 @@
 package com.modules.db.repos
 
-import com.modules.db.DAO.PasswordsDAO
+import com.modules.db.dao.PasswordsDAO
 import com.modules.db.other.PasswordUtils
 import com.modules.db.other.PswdCheckRetVal
 import com.modules.db.passwordDAOToModel

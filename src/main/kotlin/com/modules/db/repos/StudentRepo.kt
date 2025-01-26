@@ -1,7 +1,7 @@
 package com.modules.db.repos
 
-import com.modules.db.DAO.StudentsDAO
-import com.modules.db.DAO.TeachersDAO
+import com.modules.db.dao.StudentsDAO
+import com.modules.db.dao.TeachersDAO
 import com.modules.db.dataModels.StudentModel
 import com.modules.db.reposInterfaces.SchoolUsersInterface
 import com.modules.db.studentDAOToModel
@@ -15,7 +15,6 @@ import org.jetbrains.exposed.sql.transactions.TransactionManager
 import org.jetbrains.exposed.sql.update
 
 class StudentRepo : SchoolUsersInterface<StudentModel> {
-
     override suspend fun getAll(): List<StudentModel> =
         suspendTransaction {
             StudentsDAO.all().map(::studentDAOToModel).sortedBy { it.index }

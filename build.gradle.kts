@@ -20,6 +20,14 @@ application {
 repositories {
     mavenCentral()
 }
+ktlint {
+    disabledRules.set(setOf("no-wildcard-imports"))
+//    filter {
+//        exclude { element ->
+//            element.file.path.contains("**/no-wildcard-imports")
+//        }
+//    }
+}
 
 dependencies {
     implementation(libs.ktor.server.core)

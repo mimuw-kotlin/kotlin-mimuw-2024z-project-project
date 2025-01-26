@@ -117,7 +117,7 @@ fun Application.configureRoutingAdmin(
                     if (userIndex != null) {
                         val userType = checkUserType(userIndex, teacherRepo, studentRepo)
                         val allClasses = classRepo.getAll()
-//                      STUDENT
+                        // STUDENT
                         if (userType == UserTypes.getStudentType()) {
                             val user = studentRepo.getByIndex(userIndex)
                             if (user != null) {
@@ -134,9 +134,7 @@ fun Application.configureRoutingAdmin(
                             }
                             call.respondRedirect("/admin/editUsers?" + AppConsts.STATUS + AppConsts.EQUALS + "noStudentWithGivenIndex")
                             return@get
-                        }
-//                      TEACHER OR HEADMASTER
-                        else {
+                        } else {
                             val user = teacherRepo.getByIndex(userIndex)
                             if (user != null) {
                                 val allSubjects = subjectRepo.getAll()
@@ -185,8 +183,7 @@ fun Application.configureRoutingAdmin(
                         return@post
                     }
 
-                    try
-                    {
+                    try {
                         val realUserType = checkUserType(userIndex, teacherRepo, studentRepo)
                         if (realUserType == UserTypes.getStudentType() && userType != realUserType) {
                             call.respondRedirect("/admin/editUsers?" + AppConsts.STATUS + AppConsts.EQUALS + "studentTypeMismatch")
@@ -222,9 +219,7 @@ fun Application.configureRoutingAdmin(
                                 AppConsts.NO_SUBJECT_INDEX,
                                 boolActive,
                             )
-                        }
-                        // teacher or headmaster
-                        else {
+                        } else {
                             val subjectIndex = post[AppConsts.SUBJECT_INDEX]
                             if (subjectIndex == null) {
                                 call.respondRedirect("/admin/editUsers?" + AppConsts.STATUS + AppConsts.EQUALS + "subjectIndexIsNull")
@@ -261,8 +256,7 @@ fun Application.configureRoutingAdmin(
                                 boolActive,
                             )
                         }
-                    }
-                    catch (e: Exception) {
+                    } catch (e: Exception) {
                         call.respondRedirect("/admin/editUsers?" + AppConsts.STATUS + AppConsts.EQUALS + "userNotFound")
                         return@post
                     }

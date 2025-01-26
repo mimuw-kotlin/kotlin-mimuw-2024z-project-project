@@ -1,4 +1,4 @@
-package com.modules.db.DAO
+package com.modules.db.dao
 
 import com.modules.db.tables.ClassesTable
 import org.jetbrains.exposed.dao.IntEntity

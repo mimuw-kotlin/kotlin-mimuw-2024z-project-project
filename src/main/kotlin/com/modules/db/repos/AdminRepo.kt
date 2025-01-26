@@ -1,7 +1,7 @@
 package com.modules.db.repos
 
-import com.modules.db.DAO.AdminDAO
 import com.modules.db.adminDAOToModel
+import com.modules.db.dao.AdminDAO
 import com.modules.db.dataModels.AdminModel
 import com.modules.db.other.ConstsDB
 import com.modules.db.reposInterfaces.AdminInterface

@@ -4,10 +4,6 @@ import com.modules.constants.AppConsts
 import com.modules.db.dataModels.StudentModel
 import com.modules.db.dataModels.TeacherModel
 import com.modules.db.other.UserTypes
-import com.modules.db.repos.AdminRepo
-import com.modules.db.repos.PasswordRepo
-import com.modules.db.repos.StudentRepo
-import com.modules.db.repos.TeacherRepo
 import com.modules.db.reposInterfaces.AdminInterface
 import com.modules.db.reposInterfaces.PasswordInterface
 import com.modules.db.reposInterfaces.SchoolUsersInterface
