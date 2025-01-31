@@ -1,0 +1,24 @@
+ktor:
+    development: true
+    application:
+        modules:
+            - com.modules.ApplicationKt.module
+    deployment:
+        sslPort: 8443
+        port: 8080
+    security:
+      ssl:
+        keyStore: "keystore.jks"
+        keyAlias: "dziennikKey"
+        keyStorePassword: "storePassword"
+        privateKeyPassword: "storePassword"
+
+postgres:
+  driverClassName: "org.postgresql.Driver"
+  jdbcURL: "jdbc:postgresql://db:5432/postgres"
+  user: "postgres"
+  password: "password"
+
+session:
+  secretEncryptKey: "00112233445566778899aabbccddeeff"
+  secretSignKey:  "6819b57a326945c1968f45236589"
